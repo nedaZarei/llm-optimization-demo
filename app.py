@@ -45,28 +45,44 @@ footer { display: none; }
 /* ─ Spec bar ─ */
 .spec-bar {
     background: white;
-    border: 1px solid #e0dede;
-    border-radius: 8px;
-    padding: 0.85rem 1.25rem;
+    border: 1px solid #e8e6ff;
+    border-radius: 12px;
+    padding: 1rem 1.4rem;
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    font-size: 0.85rem;
-    color: #333;
+    align-items: stretch;
+    gap: 0;
     margin-top: 0.85rem;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+.spec-bar-item {
+    flex: 1;
+    padding: 0 1.2rem;
+    border-right: 1px solid #f0eeff;
+}
+.spec-bar-item:first-child { padding-left: 0; }
+.spec-bar-item:last-child { border-right: none; }
 .spec-bar .lbl {
     color: #bbb;
-    font-size: 0.7rem;
+    font-size: 0.63rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 1.2px;
+    margin-bottom: 0.3rem;
+    display: block;
 }
-.spec-bar .val { color: #111; font-weight: 600; }
-.spec-bar .sep { color: #ddd; margin: 0 0.5rem; font-size: 1rem; line-height: 1; }
-.spec-bar .specs-muted { color: #999; font-weight: 400; font-size: 0.82rem; }
+.spec-bar .val {
+    color: #111;
+    font-weight: 700;
+    font-size: 0.92rem;
+    display: block;
+}
+.spec-bar .specs-muted {
+    color: #aaa;
+    font-weight: 400;
+    font-size: 0.75rem;
+    display: block;
+    margin-top: 0.2rem;
+}
 
 /* ─ Spec tier badges ─ */
 .badge-high {
@@ -1104,23 +1120,23 @@ def render_config_section(configs: list, active_id: str):
 
     cur = next((c for c in configs if c["config_id"] == active_id), configs[0])
 
-    # Cascade: Hardware → Framework → Model
-    hw_opts = sorted(set(c["hardware"] for c in configs))
-    col_hw, col_fw, col_m = st.columns(3)
+    # Cascade: Model → Framework → Hardware
+    m_opts = sorted(set(c["model"] for c in configs))
+    col_m, col_fw, col_hw = st.columns(3)
 
-    with col_hw:
-        def_hw = cur["hardware"] if cur["hardware"] in hw_opts else hw_opts[0]
-        sel_hw = st.selectbox("Hardware", hw_opts, index=hw_opts.index(def_hw))
+    with col_m:
+        def_m = cur["model"] if cur["model"] in m_opts else m_opts[0]
+        sel_m = st.selectbox("Model", m_opts, index=m_opts.index(def_m))
 
-    fw_opts = sorted(set(c["framework"] for c in configs if c["hardware"] == sel_hw))
+    fw_opts = sorted(set(c["framework"] for c in configs if c["model"] == sel_m))
     with col_fw:
-        def_fw = cur["framework"] if (cur["hardware"] == sel_hw and cur["framework"] in fw_opts) else (fw_opts[0] if fw_opts else "")
+        def_fw = cur["framework"] if (cur["model"] == sel_m and cur["framework"] in fw_opts) else (fw_opts[0] if fw_opts else "")
         sel_fw = st.selectbox("Framework", fw_opts, index=fw_opts.index(def_fw) if def_fw in fw_opts else 0)
 
-    m_opts = sorted(set(c["model"] for c in configs if c["hardware"] == sel_hw and c["framework"] == sel_fw))
-    with col_m:
-        def_m = cur["model"] if (cur["hardware"] == sel_hw and cur["framework"] == sel_fw and cur["model"] in m_opts) else (m_opts[0] if m_opts else "")
-        sel_m = st.selectbox("Model", m_opts, index=m_opts.index(def_m) if def_m in m_opts else 0)
+    hw_opts = sorted(set(c["hardware"] for c in configs if c["model"] == sel_m and c["framework"] == sel_fw))
+    with col_hw:
+        def_hw = cur["hardware"] if (cur["model"] == sel_m and cur["framework"] == sel_fw and cur["hardware"] in hw_opts) else (hw_opts[0] if hw_opts else "")
+        sel_hw = st.selectbox("Hardware", hw_opts, index=hw_opts.index(def_hw) if def_hw in hw_opts else 0)
 
     matched = next(
         (c for c in configs if c["hardware"] == sel_hw and c["framework"] == sel_fw and c["model"] == sel_m),
@@ -1141,18 +1157,22 @@ def render_spec_bar(data: dict):
     if specs.get("tdp_w"):     spec_parts.append(f'{specs["tdp_w"]} W')
     spec_str = " · ".join(spec_parts)
 
+    hw_sub = f'<span class="specs-muted">{spec_str}</span>' if spec_str else ""
     html = (
         f'<div class="spec-bar">'
-        f'<span class="lbl">Model</span>&nbsp;<span class="val">{meta.get("model","")}</span>'
-        f'<span class="sep">·</span>'
-        f'<span class="lbl">Hardware</span>&nbsp;<span class="val">{meta.get("hardware","")}</span>'
-        f'&nbsp;{tier}'
-        f'<span class="sep">·</span>'
-    )
-    if spec_str:
-        html += f'<span class="specs-muted">{spec_str}</span><span class="sep">·</span>'
-    html += (
-        f'<span class="lbl">Framework</span>&nbsp;<span class="val">{meta.get("framework","")}</span>'
+        f'<div class="spec-bar-item">'
+        f'<span class="lbl">Model</span>'
+        f'<span class="val">{meta.get("model","")}</span>'
+        f'</div>'
+        f'<div class="spec-bar-item">'
+        f'<span class="lbl">Framework</span>'
+        f'<span class="val">{meta.get("framework","")}</span>'
+        f'</div>'
+        f'<div class="spec-bar-item">'
+        f'<span class="lbl">Hardware</span>'
+        f'<span class="val">{meta.get("hardware","")}&nbsp;{tier}</span>'
+        f'{hw_sub}'
+        f'</div>'
         f'</div>'
     )
     st.markdown(html, unsafe_allow_html=True)
