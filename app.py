@@ -335,6 +335,13 @@ a.view-link:hover { text-decoration: underline; }
     color: #555 !important;
 }
 
+/* ─ Slider label ─ */
+[data-testid="stSlider"] label {
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    color: #555 !important;
+}
+
 /* ─ Run comparison button ─ */
 [data-testid="stButton"] > button {
     background: #040442 !important;
@@ -386,15 +393,26 @@ a.view-link:hover { text-decoration: underline; }
 
 
 .live-meta {
-    font-size: 0.78rem;
-    color: #aaa;
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #f0efed;
+    font-size: 0.72rem;
+    color: #999;
+    margin-top: 0.6rem;
+    padding: 0.4rem 0.7rem;
+    background: #f7f7f7;
+    border-radius: 6px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     line-height: 1.5;
+    letter-spacing: 0.1px;
 }
-.live-meta strong { color: #555; }
+.live-meta strong { color: #333; font-weight: 700; }
+
+/* ─ Remove gap between col header and chat bubble ─ */
+[data-testid="stChatMessage"] { margin-top: 0 !important; padding-top: 0.3rem !important; }
+
+/* ─ User chat bubble — light background ─ */
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
+    background-color: #f5f4f2 !important;
+    border-radius: 10px !important;
+}
 
 /* ─ Force readable text inside assistant chat bubbles ─ */
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p,
@@ -783,11 +801,11 @@ def _run_comparison(prompt: dict, services: dict, meta: dict,
             ph_t1.write(text1 + cur1)
             ph_t2.write(text2 + cur2)
             if ttft1:
-                tps_str = f" · **{tps1:.1f} tok/s**" if tps1 else ""
+                tps_str = f" · <strong>{tps1:.1f} tok/s</strong>" if tps1 else ""
                 ph_m1.markdown(f'<p class="live-meta">TTFT <strong>{ttft1:.0f} ms</strong>{tps_str}</p>',
                                unsafe_allow_html=True)
             if ttft2:
-                tps_str = f" · **{tps2:.1f} tok/s**" if tps2 else ""
+                tps_str = f" · <strong>{tps2:.1f} tok/s</strong>" if tps2 else ""
                 ph_m2.markdown(f'<p class="live-meta">TTFT <strong>{ttft2:.0f} ms</strong>{tps_str}</p>',
                                unsafe_allow_html=True)
 
@@ -850,9 +868,10 @@ def render_live_section(data: dict):
             f'</div>',
             unsafe_allow_html=True,
         )
-        with st.chat_message("assistant"):
-            ph_t1 = st.empty()
-            ph_m1 = st.empty()
+        with st.container(height=420, border=False):
+            with st.chat_message("assistant"):
+                ph_t1 = st.empty()
+        ph_m1 = st.empty()
 
     with col2:
         st.markdown(
@@ -862,9 +881,10 @@ def render_live_section(data: dict):
             f'</div>',
             unsafe_allow_html=True,
         )
-        with st.chat_message("assistant"):
-            ph_t2 = st.empty()
-            ph_m2 = st.empty()
+        with st.container(height=420, border=False):
+            with st.chat_message("assistant"):
+                ph_t2 = st.empty()
+        ph_m2 = st.empty()
 
     ph_speedup = st.empty()
 
@@ -872,7 +892,7 @@ def render_live_section(data: dict):
     if run:
         result = _run_comparison(prompt, services, meta, ph_t1, ph_t2, ph_m1, ph_m2)
         st.session_state["_live_result"] = result
-        _show_speedup(result, ph_speedup, ph_m1, ph_m2, data)
+        st.rerun()
 
     elif st.session_state.get("_live_result"):
         r = st.session_state["_live_result"]
@@ -887,11 +907,11 @@ def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict):
     sim          = r.get("simulated", True)
 
     if ttft1:
-        s = f" · **{tps1:.1f} tok/s**" if tps1 else ""
+        s = f" · <strong>{tps1:.1f} tok/s</strong>" if tps1 else ""
         ph_m1.markdown(f'<p class="live-meta">TTFT <strong>{ttft1:.0f} ms</strong>{s}</p>',
                        unsafe_allow_html=True)
     if ttft2:
-        s = f" · **{tps2:.1f} tok/s**" if tps2 else ""
+        s = f" · <strong>{tps2:.1f} tok/s</strong>" if tps2 else ""
         ph_m2.markdown(f'<p class="live-meta">TTFT <strong>{ttft2:.0f} ms</strong>{s}</p>',
                        unsafe_allow_html=True)
     if ttft1 and ttft2:
@@ -904,8 +924,6 @@ def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict):
             f'</div>{note}',
             unsafe_allow_html=True,
         )
-        render_performance_charts(data)
-        render_accuracy(data)
 
 
 # ── Token race component ──────────────────────────────────────────────────────
@@ -1399,6 +1417,45 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit, lower_is_better=False):
     return fig
 
 
+def render_cost_savings(data: dict):
+    accuracy = data.get("correctness", {}).get("accuracy", {})
+    cost_base = accuracy.get("cost_per_1m", {}).get("baseline")
+    cost_opt  = accuracy.get("cost_per_1m", {}).get("optimized")
+    if not cost_base or not cost_opt:
+        return
+
+    monthly_m = st.session_state.get("monthly_tokens_m", 500)
+    saving_per_1m   = cost_base - cost_opt
+    saving_pct      = saving_per_1m / cost_base * 100
+    monthly_saving  = saving_per_1m * monthly_m
+    annual_saving   = monthly_saving * 12
+
+    F = "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
+    st.markdown(
+        f'<p style="font-size:0.85rem;color:#888;margin:0 0 1.2rem;{F}">'
+        f'Based on <strong style="color:#333">{monthly_m}M tokens/month</strong></p>',
+        unsafe_allow_html=True,
+    )
+
+    c1, c2, c3, c4 = st.columns(4)
+    def _card(col, label, value, sub, accent="#111"):
+        col.markdown(
+            f'<div style="background:white;border:1px solid #e2e0de;border-radius:10px;'
+            f'padding:1.1rem 1.2rem;{F}">'
+            f'<div style="font-size:0.63rem;font-weight:700;letter-spacing:1.4px;'
+            f'text-transform:uppercase;color:#aaa;margin-bottom:0.5rem">{label}</div>'
+            f'<div style="font-size:1.7rem;font-weight:900;color:{accent};line-height:1">{value}</div>'
+            f'<div style="font-size:0.72rem;color:#aaa;margin-top:0.4rem">{sub}</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+    _card(c1, "Cost per 1M tokens",   f"${cost_opt:.2f}",              f"down from ${cost_base:.2f}", "#111")
+    _card(c2, "Saving per 1M tokens", f"${saving_per_1m:.2f}",         f"{saving_pct:.0f}% reduction", "#1AD598")
+    _card(c3, "Monthly saving",        f"${monthly_saving:,.0f}",       f"at {monthly_m}M tok/mo",      "#1AD598")
+    _card(c4, "Annual saving",         f"${annual_saving:,.0f}",        "projected over 12 months",     "#1AD598")
+
+
 def render_performance_charts(data: dict):
     scenarios = data.get("benchmark", {}).get("scenarios", {})
     if not scenarios:
@@ -1413,13 +1470,13 @@ def render_performance_charts(data: dict):
     ttft_base  = [scenarios[s]["sequential"]["ttft_ms"]["baseline"]         for s in _CHART_SCENARIOS if s in scenarios]
     ttft_opt   = [scenarios[s]["sequential"]["ttft_ms"]["optimized"]        for s in _CHART_SCENARIOS if s in scenarios]
 
-    col1, col2 = st.columns(2)
-    with col1:
+    ch1, ch2 = st.columns(2, gap="medium")
+    with ch1:
         st.plotly_chart(
             _bar_chart(labels, tput_base, tput_opt, "Throughput", "tok/s", lower_is_better=False),
             use_container_width=True, config={"displayModeBar": False},
         )
-    with col2:
+    with ch2:
         st.plotly_chart(
             _bar_chart(labels, ttft_base, ttft_opt, "Time to First Token", "ms", lower_is_better=True),
             use_container_width=True, config={"displayModeBar": False},
@@ -1465,41 +1522,42 @@ def render_accuracy(data: dict):
         unsafe_allow_html=True,
     )
 
-    # ── Layer cards ───────────────────────────────────────────────────────────
-    cols = st.columns(len(validations))
-    for i, (col, v) in enumerate(zip(cols, validations)):
-        passed      = v.get("pass", False)
-        card_border = "#d0f5e8" if passed else "#ffc8c8"
-        icon_bg     = "#d0f5e8" if passed else "#ffc8c8"
-        icon_color  = "#0ea86e" if passed else "#e03c3c"
-        check       = "✓" if passed else "✗"
-        layer_num   = layer_icons[i] if i < len(layer_icons) else str(i + 1)
+    # ── Layer cards (single row) ──────────────────────────────────────────────
+    grid_cols = st.columns(len(validations), gap="small")
+    for i, v in enumerate(validations):
+            col = grid_cols[i]
+            passed      = v.get("pass", False)
+            card_border = "#d0f5e8" if passed else "#ffc8c8"
+            icon_bg     = "#d0f5e8" if passed else "#ffc8c8"
+            icon_color  = "#0ea86e" if passed else "#e03c3c"
+            check       = "✓" if passed else "✗"
+            layer_num   = layer_icons[i] if i < len(layer_icons) else str(i + 1)
 
-        col.markdown(
-            f'<div style="background:white;border:1px solid {card_border};border-radius:10px;'
-            f'padding:1.1rem 1rem;height:100%;'
-            f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+            col.markdown(
+                f'<div style="background:white;border:1px solid {card_border};border-radius:10px;'
+                f'padding:1.1rem 1rem;height:100%;'
+                f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
 
-            f'<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">'
-            f'<span style="font-size:0.8rem;color:#ccc;font-weight:600">{layer_num}</span>'
-            f'<div style="margin-left:auto;width:22px;height:22px;border-radius:50%;'
-            f'background:{icon_bg};display:flex;align-items:center;justify-content:center;'
-            f'font-size:0.75rem;font-weight:800;color:{icon_color}">{check}</div>'
-            f'</div>'
+                f'<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">'
+                f'<span style="font-size:0.8rem;color:#ccc;font-weight:600">{layer_num}</span>'
+                f'<div style="margin-left:auto;width:22px;height:22px;border-radius:50%;'
+                f'background:{icon_bg};display:flex;align-items:center;justify-content:center;'
+                f'font-size:0.75rem;font-weight:800;color:{icon_color}">{check}</div>'
+                f'</div>'
 
-            f'<div style="font-size:0.8rem;font-weight:700;color:#111;margin-bottom:0.3rem">'
-            f'{v.get("name","")}</div>'
+                f'<div style="font-size:0.8rem;font-weight:700;color:#111;margin-bottom:0.3rem">'
+                f'{v.get("name","")}</div>'
 
-            f'<div style="font-size:0.72rem;color:#aaa;line-height:1.45;margin-bottom:0.6rem">'
-            f'{v.get("description","")}</div>'
+                f'<div style="font-size:0.72rem;color:#aaa;line-height:1.45;margin-bottom:0.6rem">'
+                f'{v.get("description","")}</div>'
 
-            f'<div style="font-size:0.72rem;color:#555;background:#f9f9f9;'
-            f'border-radius:5px;padding:0.4rem 0.55rem;line-height:1.4">'
-            f'{v.get("note","")}</div>'
+                f'<div style="font-size:0.72rem;color:#555;background:#f9f9f9;'
+                f'border-radius:5px;padding:0.4rem 0.55rem;line-height:1.4">'
+                f'{v.get("note","")}</div>'
 
-            f'</div>',
-            unsafe_allow_html=True,
-        )
+                f'</div>',
+                unsafe_allow_html=True,
+            )
 
     # ── Model accuracy (MMLU / HellaSwag) ─────────────────────────────────────
 
@@ -1517,14 +1575,13 @@ def main():
     valid_ids = {c["config_id"] for c in configs}
     active_id = url_config if url_config in valid_ids else configs[0]["config_id"]
 
-    # ── Section 1: Configuration ──────────────────────────────────────────
+    # ── Top: Configuration ────────────────────────────────────────────────
     selected_id = render_config_section(configs, active_id)
 
     if not selected_id:
         st.warning("No matching configuration found.")
         st.stop()
 
-    # Sync URL param
     if selected_id != url_config:
         st.query_params["config"] = selected_id
 
@@ -1533,12 +1590,29 @@ def main():
         st.error(f"Could not load config: `{selected_id}`")
         st.stop()
 
-    # Spec summary bar
     render_spec_bar(data)
 
-    # ── Sections ─────────────────────────────────────────────────────────
+    # ── Cost savings (always visible) ────────────────────────────────────
+    st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1.5rem 0 1rem">', unsafe_allow_html=True)
+    st.markdown('<p class="slabel">Inference Cost Savings</p>', unsafe_allow_html=True)
+    with st.container(border=True):
+        monthly_tokens_m = st.slider(
+            "Monthly tokens (millions)",
+            min_value=10, max_value=5000, value=500, step=10,
+        )
+        st.session_state["monthly_tokens_m"] = monthly_tokens_m
+        render_cost_savings(data)
+
+    st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1rem 0 0.5rem">', unsafe_allow_html=True)
+    # ── Middle: Live comparison ───────────────────────────────────────────
     render_live_section(data)
-    render_cross_hardware(data)
+
+    # ── Bottom: Results (appear after comparison) ─────────────────────────
+    if st.session_state.get("_live_result"):
+        st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1.2rem 0">', unsafe_allow_html=True)
+        render_performance_charts(data)
+        render_accuracy(data)
+        render_cross_hardware(data)
 
 
 main()
