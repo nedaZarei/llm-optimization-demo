@@ -1392,7 +1392,7 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit, lower_is_better=False):
                    tickfont=dict(color="#aaa", size=11)),
         xaxis=dict(tickfont=dict(color="#555", size=12)),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                    font=dict(size=12)),
+                    font=dict(size=12, color="#333")),
         margin=dict(t=60, b=20, l=20, r=20),
         height=280,
     )
