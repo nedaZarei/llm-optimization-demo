@@ -1502,48 +1502,6 @@ def render_accuracy(data: dict):
         )
 
     # ── Model accuracy (MMLU / HellaSwag) ─────────────────────────────────────
-    accuracy = data.get("correctness", {}).get("accuracy", {})
-    benchmarks = [
-        ("MMLU",      accuracy.get("mmlu",      {}), "%"),
-        ("HellaSwag", accuracy.get("hellaswag", {}), "%"),
-    ]
-    benchmarks = [(n, v, u) for n, v, u in benchmarks if v]
-    if benchmarks:
-        st.markdown(
-            '<p style="font-size:0.78rem;font-weight:600;color:#aaa;letter-spacing:1px;'
-            'text-transform:uppercase;margin:1.4rem 0 0.8rem;'
-            'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
-            'Model Accuracy Benchmarks</p>',
-            unsafe_allow_html=True,
-        )
-        acc_cols = st.columns(len(benchmarks))
-        for col, (name, vals, unit) in zip(acc_cols, benchmarks):
-            base  = vals.get("baseline", 0)
-            opt   = vals.get("optimized", 0)
-            delta = opt - base
-            delta_str   = f"+{delta:.1f}" if delta >= 0 else f"{delta:.1f}"
-            delta_color = "#1AD598" if delta >= 0 else "#ff6b6b"
-            col.markdown(
-                f'<div style="background:white;border:1px solid #e2e0de;border-radius:10px;'
-                f'padding:1.1rem 1.2rem;'
-                f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
-                f'<div style="font-size:0.65rem;font-weight:700;letter-spacing:1.5px;'
-                f'text-transform:uppercase;color:#aaa;margin-bottom:0.6rem">{name}</div>'
-                f'<div style="display:flex;align-items:baseline;gap:1.2rem;margin-bottom:0.7rem">'
-                f'<div><div style="font-size:0.68rem;color:#bbb;margin-bottom:2px">Baseline</div>'
-                f'<div style="font-size:1.7rem;font-weight:800;color:#111">{base}'
-                f'<span style="font-size:0.85rem;color:#aaa">{unit}</span></div></div>'
-                f'<div><div style="font-size:0.68rem;color:#1AD598;margin-bottom:2px">+ Artemis</div>'
-                f'<div style="font-size:1.7rem;font-weight:800;color:#111">{opt}'
-                f'<span style="font-size:0.85rem;color:#aaa">{unit}</span></div></div>'
-                f'<div style="font-size:1rem;font-weight:700;color:{delta_color};margin-left:auto">'
-                f'{delta_str}{unit}</div>'
-                f'</div>'
-                f'<div style="font-size:0.72rem;color:#aaa;padding-top:0.6rem;border-top:1px solid #f0efed">'
-                f'No statistically significant change — model behaviour preserved.</div>'
-                f'</div>',
-                unsafe_allow_html=True,
-            )
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
