@@ -443,12 +443,19 @@ a.view-link:hover { text-decoration: underline; }
     font-size: 1.15rem;
     font-weight: 500;
     color: #333;
-    margin: 2rem 0 0.4rem 0;
+    margin: 1.2rem 0 0.4rem 0;
     padding: 1.4rem 2rem;
     background: linear-gradient(135deg, #f4fef9 0%, #faf9ff 100%);
     border: 1px solid #d0f5e8;
     border-radius: 12px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ─ Results reveal box ─ */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    background: #fafafe !important;
+    border: 1.5px solid #e8e6ff !important;
+    border-radius: 14px !important;
 }
 .speedup-num {
     color: #1AD598;
@@ -876,6 +883,9 @@ def render_live_section(data: dict):
     # ── Response columns (assistant only) ──────────────────────────────────
     col1, col2 = st.columns(2, gap="medium")
 
+    has_result = bool(st.session_state.get("_live_result"))
+    frame_h = 420 if (has_result or run) else "content"
+
     with col1:
         st.markdown(
             f'<div class="live-col-hdr">'
@@ -884,7 +894,7 @@ def render_live_section(data: dict):
             f'</div>',
             unsafe_allow_html=True,
         )
-        with st.container(height=420, border=False):
+        with st.container(height=frame_h, border=False):
             with st.chat_message("assistant"):
                 ph_t1 = st.empty()
         ph_m1 = st.empty()
@@ -897,7 +907,7 @@ def render_live_section(data: dict):
             f'</div>',
             unsafe_allow_html=True,
         )
-        with st.container(height=420, border=False):
+        with st.container(height=frame_h, border=False):
             with st.chat_message("assistant"):
                 ph_t2 = st.empty()
         ph_m2 = st.empty()
@@ -914,10 +924,10 @@ def render_live_section(data: dict):
         r = st.session_state["_live_result"]
         ph_t1.markdown(r["text1"])
         ph_t2.markdown(r["text2"])
-        _show_speedup(r, ph_speedup, ph_m1, ph_m2, data)
+        _show_speedup(r, ph_speedup, ph_m1, ph_m2, data, speedup_in_box=True)
 
 
-def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict):
+def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict, speedup_in_box: bool = False):
     ttft1, ttft2 = r.get("ttft1"), r.get("ttft2")
     tps1,  tps2  = r.get("tps1"),  r.get("tps2")
     if ttft1:
@@ -928,7 +938,7 @@ def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict):
         s = f" · <strong>{tps2:.1f} tok/s</strong>" if tps2 else ""
         ph_m2.markdown(f'<p class="live-meta">TTFT <strong>{ttft2:.0f} ms</strong>{s}</p>',
                        unsafe_allow_html=True)
-    if ttft1 and ttft2:
+    if ttft1 and ttft2 and not speedup_in_box:
         ratio = ttft1 / max(ttft2, 0.001)
         ph_speedup.markdown(
             f'<div class="speedup-callout">'
@@ -1609,7 +1619,37 @@ def main():
 
     render_spec_bar(data)
 
-    # ── Cost savings (always visible) ────────────────────────────────────
+    # ── Live comparison ───────────────────────────────────────────────────
+    st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1rem 0 0.5rem">', unsafe_allow_html=True)
+    render_live_section(data)
+
+    # ── Results (appear after comparison) ─────────────────────────────────
+    if st.session_state.get("_live_result"):
+        st.markdown(
+            '<style>'
+            '[data-testid="stVerticalBlockBorderWrapper"]{'
+            'background:#fafafe!important;'
+            'border:1.5px solid #e8e6ff!important;'
+            'border-radius:14px!important;'
+            '}'
+            '</style>',
+            unsafe_allow_html=True,
+        )
+        with st.container(border=True):
+            r = st.session_state["_live_result"]
+            if r.get("ttft1") and r.get("ttft2"):
+                ratio = r["ttft1"] / max(r["ttft2"], 0.001)
+                st.markdown(
+                    f'<div class="speedup-callout" style="margin-top:0">'
+                    f'<span class="speedup-num">{ratio:.2f}×</span>'
+                    f'faster with Artemis on this prompt'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            render_performance_charts(data)
+            render_accuracy(data)
+
+    # ── Cost savings ─────────────────────────────────────────────────────
     st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1.5rem 0 1rem">', unsafe_allow_html=True)
     st.markdown('<p class="slabel">Inference Cost Savings</p>', unsafe_allow_html=True)
     with st.container(border=True):
@@ -1620,16 +1660,9 @@ def main():
         st.session_state["monthly_tokens_m"] = monthly_tokens_m
         render_cost_savings(data)
 
-    st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1rem 0 0.5rem">', unsafe_allow_html=True)
-    # ── Middle: Live comparison ───────────────────────────────────────────
-    render_live_section(data)
-
-    # ── Bottom: Results (appear after comparison) ─────────────────────────
-    if st.session_state.get("_live_result"):
-        st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1.2rem 0">', unsafe_allow_html=True)
-        render_performance_charts(data)
-        render_accuracy(data)
-        render_cross_hardware(data)
+    # ── Cross-hardware ────────────────────────────────────────────────────
+    st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1.5rem 0 1rem">', unsafe_allow_html=True)
+    render_cross_hardware(data)
 
 
 main()
