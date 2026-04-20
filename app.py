@@ -904,8 +904,6 @@ def render_live_section(data: dict):
 def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict):
     ttft1, ttft2 = r.get("ttft1"), r.get("ttft2")
     tps1,  tps2  = r.get("tps1"),  r.get("tps2")
-    sim          = r.get("simulated", True)
-
     if ttft1:
         s = f" · <strong>{tps1:.1f} tok/s</strong>" if tps1 else ""
         ph_m1.markdown(f'<p class="live-meta">TTFT <strong>{ttft1:.0f} ms</strong>{s}</p>',
@@ -916,12 +914,11 @@ def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict):
                        unsafe_allow_html=True)
     if ttft1 and ttft2:
         ratio = ttft1 / max(ttft2, 0.001)
-        note  = '<p class="sim-note">replaying recorded benchmark run</p>' if sim else ""
         ph_speedup.markdown(
             f'<div class="speedup-callout">'
             f'<span class="speedup-num">{ratio:.2f}×</span>'
             f'faster with Artemis on this prompt'
-            f'</div>{note}',
+            f'</div>',
             unsafe_allow_html=True,
         )
 
@@ -1373,8 +1370,8 @@ def build_markdown_report(data: dict, config_id: str) -> str:
 
 _CHART_SCENARIOS = ["small_prompt", "large_prompt", "long_context"]
 _SCENARIO_LABELS = {"small_prompt": "Small Prompt", "large_prompt": "Large Prompt", "long_context": "Long Context"}
-_COL_BASE = "#9D98FF"
-_COL_OPT  = "#1AD598"
+_COL_BASE = "#1AD598"
+_COL_OPT  = "#7C73FF"
 
 def _bar_chart(labels, base_vals, opt_vals, title, unit, lower_is_better=False):
     fig = go.Figure()
@@ -1385,7 +1382,7 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit, lower_is_better=False):
         marker_color=_COL_BASE,
         text=[f"{v} {unit}" for v in base_vals],
         textposition="outside",
-        textfont=dict(size=11, color="#555"),
+        textfont=dict(size=11, color="#1AD598"),
     ))
     fig.add_trace(go.Bar(
         name="+ Artemis",
@@ -1394,7 +1391,7 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit, lower_is_better=False):
         marker_color=_COL_OPT,
         text=[f"{v} {unit}" for v in opt_vals],
         textposition="outside",
-        textfont=dict(size=11, color="#1AD598"),
+        textfont=dict(size=11, color="#7C73FF"),
     ))
     note = "lower is better" if lower_is_better else "higher is better"
     fig.update_layout(
