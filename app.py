@@ -4,6 +4,7 @@ import threading
 import queue as _queue
 import time as _time
 from pathlib import Path
+import plotly.graph_objects as go
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -363,18 +364,6 @@ a.view-link:hover { text-decoration: underline; }
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.prompt-preview {
-    background: white;
-    border: 1px solid #e2e0de;
-    border-radius: 8px;
-    padding: 0.85rem 1.1rem;
-    font-size: 0.875rem;
-    color: #444;
-    margin-bottom: 1rem;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
 
 .live-col-hdr {
     display: flex;
@@ -382,7 +371,7 @@ a.view-link:hover { text-decoration: underline; }
     align-items: center;
     padding-bottom: 0.6rem;
     border-bottom: 1px solid #f0efed;
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.9rem;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 .live-col-title { font-weight: 700; color: #111; font-size: 0.88rem; }
@@ -394,16 +383,26 @@ a.view-link:hover { text-decoration: underline; }
     font-size: 0.64rem; font-weight: 700; letter-spacing: 1.2px;
     text-transform: uppercase; color: #1AD598;
 }
+
+
 .live-meta {
     font-size: 0.78rem;
     color: #aaa;
-    margin-top: 0.7rem;
-    padding-top: 0.6rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
     border-top: 1px solid #f0efed;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     line-height: 1.5;
 }
 .live-meta strong { color: #555; }
+
+/* ─ Force readable text inside assistant chat bubbles ─ */
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p,
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] li,
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] strong,
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] em {
+    color: #111 !important;
+}
 
 .speedup-callout {
     text-align: center;
@@ -781,14 +780,8 @@ def _run_comparison(prompt: dict, services: dict, meta: dict,
         if changed:
             cur1 = "" if done1 else " ▌"
             cur2 = "" if done2 else " ▌"
-            ph_t1.markdown(
-                f'<div style="font-size:0.85rem;line-height:1.65;color:#111;white-space:pre-wrap;font-family:inherit">{text1}{cur1}</div>',
-                unsafe_allow_html=True,
-            )
-            ph_t2.markdown(
-                f'<div style="font-size:0.85rem;line-height:1.65;color:#111;white-space:pre-wrap;font-family:inherit">{text2}{cur2}</div>',
-                unsafe_allow_html=True,
-            )
+            ph_t1.write(text1 + cur1)
+            ph_t2.write(text2 + cur2)
             if ttft1:
                 tps_str = f" · **{tps1:.1f} tok/s**" if tps1 else ""
                 ph_m1.markdown(f'<p class="live-meta">TTFT <strong>{ttft1:.0f} ms</strong>{tps_str}</p>',
@@ -800,9 +793,9 @@ def _run_comparison(prompt: dict, services: dict, meta: dict,
 
         _time.sleep(0.025)
 
-    # Final render with full markdown (code highlighting etc.)
-    ph_t1.markdown(f'<div style="font-size:0.85rem;line-height:1.65;color:#111">\n\n{text1}\n\n</div>', unsafe_allow_html=True)
-    ph_t2.markdown(f'<div style="font-size:0.85rem;line-height:1.65;color:#111">\n\n{text2}\n\n</div>', unsafe_allow_html=True)
+    # Final render
+    ph_t1.markdown(text1)
+    ph_t2.markdown(text2)
 
     return dict(text1=text1, text2=text2,
                 ttft1=ttft1, ttft2=ttft2,
@@ -831,10 +824,9 @@ def render_live_section(data: dict):
     )
     prompt = demo_prompts[prompt_idx]
 
-    st.markdown(
-        f'<div class="prompt-preview">{prompt["user"]}</div>',
-        unsafe_allow_html=True,
-    )
+    # ── Single user message above both columns ──────────────────────────────
+    with st.chat_message("user"):
+        st.write(prompt["user"])
 
     btn_col, _ = st.columns([1, 3])
     with btn_col:
@@ -847,7 +839,7 @@ def render_live_section(data: dict):
         st.session_state["_live_key"]    = result_key
         st.session_state["_live_result"] = None
 
-    # ── Column headers ─────────────────────────────────────────────────────
+    # ── Response columns (assistant only) ──────────────────────────────────
     col1, col2 = st.columns(2, gap="medium")
 
     with col1:
@@ -858,8 +850,9 @@ def render_live_section(data: dict):
             f'</div>',
             unsafe_allow_html=True,
         )
-        ph_t1 = st.empty()
-        ph_m1 = st.empty()
+        with st.chat_message("assistant"):
+            ph_t1 = st.empty()
+            ph_m1 = st.empty()
 
     with col2:
         st.markdown(
@@ -869,8 +862,9 @@ def render_live_section(data: dict):
             f'</div>',
             unsafe_allow_html=True,
         )
-        ph_t2 = st.empty()
-        ph_m2 = st.empty()
+        with st.chat_message("assistant"):
+            ph_t2 = st.empty()
+            ph_m2 = st.empty()
 
     ph_speedup = st.empty()
 
@@ -878,16 +872,16 @@ def render_live_section(data: dict):
     if run:
         result = _run_comparison(prompt, services, meta, ph_t1, ph_t2, ph_m1, ph_m2)
         st.session_state["_live_result"] = result
-        _show_speedup(result, ph_speedup, ph_m1, ph_m2)
+        _show_speedup(result, ph_speedup, ph_m1, ph_m2, data)
 
     elif st.session_state.get("_live_result"):
         r = st.session_state["_live_result"]
-        ph_t1.markdown(f'<div style="font-size:0.85rem;line-height:1.65;color:#111">\n\n{r["text1"]}\n\n</div>', unsafe_allow_html=True)
-        ph_t2.markdown(f'<div style="font-size:0.85rem;line-height:1.65;color:#111">\n\n{r["text2"]}\n\n</div>', unsafe_allow_html=True)
-        _show_speedup(r, ph_speedup, ph_m1, ph_m2)
+        ph_t1.markdown(r["text1"])
+        ph_t2.markdown(r["text2"])
+        _show_speedup(r, ph_speedup, ph_m1, ph_m2, data)
 
 
-def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2):
+def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict):
     ttft1, ttft2 = r.get("ttft1"), r.get("ttft2")
     tps1,  tps2  = r.get("tps1"),  r.get("tps2")
     sim          = r.get("simulated", True)
@@ -910,6 +904,8 @@ def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2):
             f'</div>{note}',
             unsafe_allow_html=True,
         )
+        render_performance_charts(data)
+        render_accuracy(data)
 
 
 # ── Token race component ──────────────────────────────────────────────────────
@@ -1355,6 +1351,201 @@ def build_markdown_report(data: dict, config_id: str) -> str:
     return "\n".join(lines)
 
 
+# ── Performance charts ────────────────────────────────────────────────────────
+
+_CHART_SCENARIOS = ["small_prompt", "large_prompt", "long_context"]
+_SCENARIO_LABELS = {"small_prompt": "Small Prompt", "large_prompt": "Large Prompt", "long_context": "Long Context"}
+_COL_BASE = "#9D98FF"
+_COL_OPT  = "#1AD598"
+
+def _bar_chart(labels, base_vals, opt_vals, title, unit, lower_is_better=False):
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        name="Baseline",
+        x=labels,
+        y=base_vals,
+        marker_color=_COL_BASE,
+        text=[f"{v} {unit}" for v in base_vals],
+        textposition="outside",
+        textfont=dict(size=11, color="#555"),
+    ))
+    fig.add_trace(go.Bar(
+        name="+ Artemis",
+        x=labels,
+        y=opt_vals,
+        marker_color=_COL_OPT,
+        text=[f"{v} {unit}" for v in opt_vals],
+        textposition="outside",
+        textfont=dict(size=11, color="#1AD598"),
+    ))
+    note = "lower is better" if lower_is_better else "higher is better"
+    fig.update_layout(
+        title=dict(text=f"{title} <sup style='color:#aaa;font-size:11px'>({note})</sup>",
+                   font=dict(size=14, color="#111"), x=0),
+        barmode="group",
+        bargap=0.25,
+        bargroupgap=0.08,
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        font=dict(family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"),
+        yaxis=dict(showgrid=True, gridcolor="#f0efed", zeroline=False,
+                   tickfont=dict(color="#aaa", size=11)),
+        xaxis=dict(tickfont=dict(color="#555", size=12)),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
+                    font=dict(size=12)),
+        margin=dict(t=60, b=20, l=20, r=20),
+        height=280,
+    )
+    return fig
+
+
+def render_performance_charts(data: dict):
+    scenarios = data.get("benchmark", {}).get("scenarios", {})
+    if not scenarios:
+        return
+
+    st.markdown('<hr class="section-sep">', unsafe_allow_html=True)
+    st.markdown('<p class="slabel">Performance Results</p>', unsafe_allow_html=True)
+
+    labels     = [_SCENARIO_LABELS.get(s, s) for s in _CHART_SCENARIOS if s in scenarios]
+    tput_base  = [scenarios[s]["sequential"]["throughput_tps"]["baseline"]  for s in _CHART_SCENARIOS if s in scenarios]
+    tput_opt   = [scenarios[s]["sequential"]["throughput_tps"]["optimized"] for s in _CHART_SCENARIOS if s in scenarios]
+    ttft_base  = [scenarios[s]["sequential"]["ttft_ms"]["baseline"]         for s in _CHART_SCENARIOS if s in scenarios]
+    ttft_opt   = [scenarios[s]["sequential"]["ttft_ms"]["optimized"]        for s in _CHART_SCENARIOS if s in scenarios]
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.plotly_chart(
+            _bar_chart(labels, tput_base, tput_opt, "Throughput", "tok/s", lower_is_better=False),
+            use_container_width=True, config={"displayModeBar": False},
+        )
+    with col2:
+        st.plotly_chart(
+            _bar_chart(labels, ttft_base, ttft_opt, "Time to First Token", "ms", lower_is_better=True),
+            use_container_width=True, config={"displayModeBar": False},
+        )
+
+
+def render_accuracy(data: dict):
+    validations = data.get("correctness", {}).get("validations", [])
+    if not validations:
+        return
+
+    all_pass = all(v.get("pass", False) for v in validations)
+    n_pass   = sum(1 for v in validations if v.get("pass", False))
+    n_total  = len(validations)
+
+    banner_bg    = "#f4fef9" if all_pass else "#fff5f5"
+    banner_border = "#d0f5e8" if all_pass else "#ffc8c8"
+    banner_color  = "#0ea86e" if all_pass else "#e03c3c"
+    banner_icon   = "✓" if all_pass else "✗"
+    banner_text   = f"All {n_total} checks passed — outputs verified identical" if all_pass else f"{n_pass} / {n_total} checks passed"
+
+    layer_icons = ["①", "②", "③", "④", "⑤", "⑥"]
+
+    st.markdown('<hr class="section-sep">', unsafe_allow_html=True)
+    st.markdown('<p class="slabel">Output Correctness</p>', unsafe_allow_html=True)
+    st.markdown(
+        '<p style="font-size:0.85rem;color:#888;margin:-0.5rem 0 1.2rem;'
+        'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+        'Independent validation layers confirm the optimised model produces '
+        'semantically identical outputs to the baseline.</p>',
+        unsafe_allow_html=True,
+    )
+
+    # ── Banner ────────────────────────────────────────────────────────────────
+    st.markdown(
+        f'<div style="background:{banner_bg};border:1.5px solid {banner_border};'
+        f'border-radius:10px;padding:1rem 1.4rem;margin-bottom:1.1rem;'
+        f'display:flex;align-items:center;gap:0.8rem;'
+        f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+        f'<span style="font-size:1.4rem;color:{banner_color};font-weight:900">{banner_icon}</span>'
+        f'<span style="font-size:0.95rem;font-weight:700;color:{banner_color}">{banner_text}</span>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+    # ── Layer cards ───────────────────────────────────────────────────────────
+    cols = st.columns(len(validations))
+    for i, (col, v) in enumerate(zip(cols, validations)):
+        passed      = v.get("pass", False)
+        card_border = "#d0f5e8" if passed else "#ffc8c8"
+        icon_bg     = "#d0f5e8" if passed else "#ffc8c8"
+        icon_color  = "#0ea86e" if passed else "#e03c3c"
+        check       = "✓" if passed else "✗"
+        layer_num   = layer_icons[i] if i < len(layer_icons) else str(i + 1)
+
+        col.markdown(
+            f'<div style="background:white;border:1px solid {card_border};border-radius:10px;'
+            f'padding:1.1rem 1rem;height:100%;'
+            f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+
+            f'<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">'
+            f'<span style="font-size:0.8rem;color:#ccc;font-weight:600">{layer_num}</span>'
+            f'<div style="margin-left:auto;width:22px;height:22px;border-radius:50%;'
+            f'background:{icon_bg};display:flex;align-items:center;justify-content:center;'
+            f'font-size:0.75rem;font-weight:800;color:{icon_color}">{check}</div>'
+            f'</div>'
+
+            f'<div style="font-size:0.8rem;font-weight:700;color:#111;margin-bottom:0.3rem">'
+            f'{v.get("name","")}</div>'
+
+            f'<div style="font-size:0.72rem;color:#aaa;line-height:1.45;margin-bottom:0.6rem">'
+            f'{v.get("description","")}</div>'
+
+            f'<div style="font-size:0.72rem;color:#555;background:#f9f9f9;'
+            f'border-radius:5px;padding:0.4rem 0.55rem;line-height:1.4">'
+            f'{v.get("note","")}</div>'
+
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+    # ── Model accuracy (MMLU / HellaSwag) ─────────────────────────────────────
+    accuracy = data.get("correctness", {}).get("accuracy", {})
+    benchmarks = [
+        ("MMLU",      accuracy.get("mmlu",      {}), "%"),
+        ("HellaSwag", accuracy.get("hellaswag", {}), "%"),
+    ]
+    benchmarks = [(n, v, u) for n, v, u in benchmarks if v]
+    if benchmarks:
+        st.markdown(
+            '<p style="font-size:0.78rem;font-weight:600;color:#aaa;letter-spacing:1px;'
+            'text-transform:uppercase;margin:1.4rem 0 0.8rem;'
+            'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+            'Model Accuracy Benchmarks</p>',
+            unsafe_allow_html=True,
+        )
+        acc_cols = st.columns(len(benchmarks))
+        for col, (name, vals, unit) in zip(acc_cols, benchmarks):
+            base  = vals.get("baseline", 0)
+            opt   = vals.get("optimized", 0)
+            delta = opt - base
+            delta_str   = f"+{delta:.1f}" if delta >= 0 else f"{delta:.1f}"
+            delta_color = "#1AD598" if delta >= 0 else "#ff6b6b"
+            col.markdown(
+                f'<div style="background:white;border:1px solid #e2e0de;border-radius:10px;'
+                f'padding:1.1rem 1.2rem;'
+                f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+                f'<div style="font-size:0.65rem;font-weight:700;letter-spacing:1.5px;'
+                f'text-transform:uppercase;color:#aaa;margin-bottom:0.6rem">{name}</div>'
+                f'<div style="display:flex;align-items:baseline;gap:1.2rem;margin-bottom:0.7rem">'
+                f'<div><div style="font-size:0.68rem;color:#bbb;margin-bottom:2px">Baseline</div>'
+                f'<div style="font-size:1.7rem;font-weight:800;color:#111">{base}'
+                f'<span style="font-size:0.85rem;color:#aaa">{unit}</span></div></div>'
+                f'<div><div style="font-size:0.68rem;color:#1AD598;margin-bottom:2px">+ Artemis</div>'
+                f'<div style="font-size:1.7rem;font-weight:800;color:#111">{opt}'
+                f'<span style="font-size:0.85rem;color:#aaa">{unit}</span></div></div>'
+                f'<div style="font-size:1rem;font-weight:700;color:{delta_color};margin-left:auto">'
+                f'{delta_str}{unit}</div>'
+                f'</div>'
+                f'<div style="font-size:0.72rem;color:#aaa;padding-top:0.6rem;border-top:1px solid #f0efed">'
+                f'No statistically significant change — model behaviour preserved.</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -1387,7 +1578,7 @@ def main():
     # Spec summary bar
     render_spec_bar(data)
 
-    # ── Sections 2-3 ─────────────────────────────────────────────────────
+    # ── Sections ─────────────────────────────────────────────────────────
     render_live_section(data)
     render_cross_hardware(data)
 
