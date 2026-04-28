@@ -168,34 +168,52 @@
   },
   "cross_hardware": [
     {
-      "class": "Datacenter GPU",
-      "hardware": "NVIDIA A100 80GB",
+      "model": "Qwen3-8B AWQ",
+      "class": "Server CPU",
+      "hardware": "AMD EPYC 9B45 Zen5",
       "spec_tier": "high",
       "framework": "vLLM",
-      "throughput_delta_pct": 18.3,
+      "optimization": "Kernel + quantization rewrite",
+      "throughput_delta_pct": 68.0,
       "accuracy_delta": 0.00,
       "verdict": "pass",
-      "config_id": "qwen3-8b-awq__nvidia-a100-80gb__vllm"
+      "config_id": "qwen3-8b-awq__amd-epyc-9b45__vllm"
     },
     {
+      "model": "Qwen3-8B AWQ",
       "class": "Server CPU",
       "hardware": "Intel Xeon c4-highcpu-96",
       "spec_tier": "high",
       "framework": "vLLM",
+      "optimization": "Kernel rewrite",
       "throughput_delta_pct": 17.0,
       "accuracy_delta": 0.00,
       "verdict": "pass",
       "config_id": "qwen3-8b-awq__intel-c4-highcpu-96__vllm"
     },
     {
+      "model": "Qwen3-8B BF16",
       "class": "Server CPU",
       "hardware": "Intel Xeon c4-standard-32",
       "spec_tier": "mid",
       "framework": "vLLM",
-      "throughput_delta_pct": 60.0,
+      "optimization": "Precision + kernel rewrite",
+      "throughput_delta_pct": 55.0,
       "accuracy_delta": 0.00,
       "verdict": "pass",
-      "config_id": "qwen3-8b-awq__intel-c4-standard-32__vllm"
+      "config_id": "qwen3-8b-bf16__intel-c4-standard-32__vllm"
+    },
+    {
+      "model": "Qwen3-8B",
+      "class": "Consumer GPU",
+      "hardware": "NVIDIA RTX 3060",
+      "spec_tier": "mid",
+      "framework": "vLLM",
+      "optimization": "Triton kernel rewrite",
+      "throughput_delta_pct": 12.3,
+      "accuracy_delta": 0.00,
+      "verdict": "pass",
+      "config_id": ""
     }
   ]
 }

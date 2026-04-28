@@ -17,69 +17,82 @@ st.set_page_config(
 # ── CSS ───────────────────────────────────────────────────────────────────────
 CSS = """
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 /* ─ Base ─ */
-[data-testid="stAppViewContainer"] { background: #ededed; }
+[data-testid="stAppViewContainer"] {
+    background: #f4f2ff;
+    background-image:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(124,115,255,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(26,213,152,0.08) 0%, transparent 55%);
+}
 [data-testid="stHeader"] { background: transparent; }
 [data-testid="stToolbar"] { display: none; }
 .block-container {
-    padding: 2.5rem 3rem 4rem 3rem !important;
-    max-width: 1060px !important;
+    padding: 3rem 3.5rem 6rem !important;
+    max-width: 1100px !important;
     margin: 0 auto;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 /* ─ Hide default Streamlit chrome ─ */
 footer { display: none; }
 #MainMenu { display: none; }
 
-/* ─ Section label (CONFIGURATION, VALIDATED BENCHMARK, …) ─ */
+/* ─ Section label ─ */
 .slabel {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 1.8px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
     color: #7C73FF;
-    margin: 0 0 0.8rem 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0 0 0.9rem 0;
+    padding-left: 0.65rem;
+    border-left: 3px solid #7C73FF;
+    line-height: 1.5;
+    font-family: 'Inter', -apple-system, sans-serif;
 }
 
 /* ─ Spec bar ─ */
 .spec-bar {
     background: white;
-    border: 1px solid #e8e6ff;
-    border-radius: 12px;
-    padding: 1rem 1.4rem;
+    border: 1px solid #e4e0ff;
+    border-radius: 14px;
+    padding: 1.1rem 1.6rem;
     display: flex;
     align-items: stretch;
     gap: 0;
     margin-top: 0.85rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    box-shadow: 0 2px 16px rgba(124,115,255,0.07);
+    font-family: 'Inter', -apple-system, sans-serif;
 }
 .spec-bar-item {
     flex: 1;
-    padding: 0 1.2rem;
-    border-right: 1px solid #f0eeff;
+    padding: 0 1.4rem;
+    border-right: 1px solid #ede9ff;
 }
 .spec-bar-item:first-child { padding-left: 0; }
 .spec-bar-item:last-child { border-right: none; }
 .spec-bar .lbl {
-    color: #bbb;
-    font-size: 0.63rem;
+    color: #c4bfdf;
+    font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    margin-bottom: 0.3rem;
+    letter-spacing: 1.4px;
+    margin-bottom: 0.35rem;
     display: block;
 }
 .spec-bar .val {
-    color: #111;
+    color: #1a1245;
     font-weight: 700;
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     display: block;
+    letter-spacing: -0.2px;
 }
 .spec-bar .specs-muted {
-    color: #aaa;
+    color: #b0aac8;
     font-weight: 400;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     display: block;
     margin-top: 0.2rem;
 }
@@ -88,100 +101,95 @@ footer { display: none; }
 .badge-high {
     display: inline-block;
     background: #eeecff;
-    color: #7C73FF;
+    color: #6056e8;
     border: 1px solid #c8c4ff;
-    border-radius: 4px;
-    padding: 0.12rem 0.45rem;
-    font-size: 0.68rem;
-    font-weight: 700;
+    border-radius: 5px;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.62rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
 .badge-mid {
     display: inline-block;
     background: #fffbea;
     color: #a16207;
     border: 1px solid #fde68a;
-    border-radius: 4px;
-    padding: 0.12rem 0.45rem;
-    font-size: 0.68rem;
-    font-weight: 700;
+    border-radius: 5px;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.62rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
 .badge-low {
     display: inline-block;
     background: #f1f5f9;
     color: #64748b;
     border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    padding: 0.12rem 0.45rem;
-    font-size: 0.68rem;
-    font-weight: 700;
+    border-radius: 5px;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.62rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
 
 /* ─ Section divider ─ */
 .section-sep {
     border: none;
-    border-top: 1.5px solid #e0dede;
-    margin: 2.25rem 0 1.75rem 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(124,115,255,0.35) 0%, rgba(26,213,152,0.2) 60%, transparent 100%);
+    margin: 2.25rem 0 1.75rem;
 }
 
 /* ─ Benchmark table ─ */
 .bm-wrap {
-    border: 1px solid #e2e0de;
-    border-radius: 8px;
-    overflow: visible;   /* must be visible for tooltips to escape */
+    border: 1px solid #e4e0ff;
+    border-radius: 12px;
+    overflow: visible;
     background: white;
-    /* keep rounded corners visible via clipping on thead first/last cells */
+    box-shadow: 0 2px 12px rgba(124,115,255,0.06);
 }
 .bm-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    border-radius: 8px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    border-radius: 12px;
     overflow: hidden;
 }
-.bm-table thead tr {
-    border-bottom: 2px solid #eeecff;
-}
+.bm-table thead tr { border-bottom: 2px solid #f0eeff; }
 .bm-table thead th {
-    padding: 0.65rem 1.1rem;
+    padding: 0.7rem 1.1rem;
     text-align: left;
-    font-size: 0.7rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.7px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: #bbb;
+    color: #c4bfdf;
     background: white;
 }
-.bm-table thead th:first-child { border-radius: 8px 0 0 0; }
-.bm-table thead th:last-child  { border-radius: 0 8px 0 0; }
+.bm-table thead th:first-child { border-radius: 12px 0 0 0; }
+.bm-table thead th:last-child  { border-radius: 0 12px 0 0; }
 .bm-table thead th.col-artemis { color: #7C73FF; }
 .bm-table tbody td {
     padding: 0.65rem 1.1rem;
-    border-bottom: 1px solid #f0effe;
+    border-bottom: 1px solid #f5f3ff;
     color: #333;
     vertical-align: middle;
 }
 .bm-table tbody tr:last-child td { border-bottom: none; }
 .bm-table .type-cell {
     font-weight: 700;
-    color: #111;
+    color: #1a1245;
     font-size: 0.875rem;
-    border-right: 1px solid #eeecf8;
+    border-right: 1px solid #f0eeff;
     white-space: nowrap;
     padding-left: 0.9rem;
 }
 .bm-table .metric-cell { color: #666; }
-
-/* ─ Group separator between scenario blocks ─ */
-.bm-table tr.g-sep td {
-    border-top: 2px solid #e8e6f8 !important;
-}
+.bm-table tr.g-sep td { border-top: 2px solid #ede9ff !important; }
 
 /* ─ Tooltip ─ */
 .tt {
@@ -195,20 +203,20 @@ footer { display: none; }
     position: absolute;
     left: 0;
     top: calc(100% + 7px);
-    background: #040442;
+    background: #1a1245;
     color: #e8e6ff;
-    border-radius: 7px;
-    padding: 0.45rem 0.75rem;
-    font-size: 0.76rem;
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.75rem;
     font-weight: 400;
-    line-height: 1.45;
+    line-height: 1.5;
     width: 230px;
     white-space: normal;
     z-index: 9999;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.18s ease;
-    box-shadow: 0 6px 20px rgba(4, 4, 66, 0.25);
+    box-shadow: 0 8px 24px rgba(26,18,69,0.3);
 }
 .tt:hover::after { opacity: 1; }
 
@@ -217,68 +225,50 @@ footer { display: none; }
 .d-neg  { color: #e03131; font-weight: 700; }
 .d-neut { color: #aaa;    font-weight: 600; }
 
-/* ─ Cross-hardware table ─ */
+/* ─ Built for your stack table ─ */
 .hw-wrap {
-    border: 1px solid #e2e0de;
-    border-radius: 8px;
+    border: 1px solid #e4e0ff;
+    border-radius: 12px;
     overflow: hidden;
     background: white;
+    box-shadow: 0 2px 12px rgba(124,115,255,0.06);
 }
 .hw-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
 }
-.hw-table thead tr { border-bottom: 1.5px solid #f0efed; }
+.hw-table thead tr { border-bottom: 1.5px solid #f0eeff; }
 .hw-table thead th {
-    padding: 0.65rem 1.1rem;
+    padding: 0.7rem 1.1rem;
     text-align: left;
-    font-size: 0.7rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.7px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: #bbb;
+    color: #c4bfdf;
     background: white;
 }
 .hw-table tbody td {
-    padding: 0.7rem 1.1rem;
-    border-bottom: 1px solid #f5f4f2;
+    padding: 0.75rem 1.1rem;
+    border-bottom: 1px solid #f7f5ff;
     vertical-align: middle;
 }
 .hw-table tbody tr:last-child td { border-bottom: none; }
-.hw-table tbody tr:hover td { background: #fafaf9; }
-.hw-name { font-weight: 600; color: #111; }
-.hw-class { color: #888; font-size: 0.82rem; }
+.hw-table tbody tr:hover td { background: #faf9ff; }
+.hw-name { font-weight: 700; color: #1a1245; }
+.hw-class { color: #a09cc0; font-size: 0.82rem; }
 
 /* ─ Progress bar ─ */
 .pbar-row { display: flex; align-items: center; gap: 0.6rem; }
-.pbar-bg  { background: #e8e8e6; border-radius: 3px; height: 5px; width: 80px; flex-shrink: 0; }
-.pbar-fg  { background: #1AD598; border-radius: 3px; height: 5px; }
+.pbar-bg  { background: #ede9ff; border-radius: 4px; height: 6px; width: 80px; flex-shrink: 0; }
+.pbar-fg  { background: linear-gradient(90deg, #7C73FF, #1AD598); border-radius: 4px; height: 6px; }
 
 /* ─ Verdict ─ */
 .verd-pass { color: #1AD598; font-weight: 700; font-size: 0.82rem; }
 .verd-warn { color: #b45309; font-weight: 600; font-size: 0.82rem; }
 .verd-fail { color: #e03131; font-weight: 600; font-size: 0.82rem; }
-
-/* ─ Validation list ─ */
-.val-card {
-    background: white;
-    border: 1px solid #e2e0de;
-    border-radius: 8px;
-    padding: 0.3rem 1.1rem 0.3rem 1.1rem;
-}
-.val-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    padding: 0.65rem 0;
-    border-bottom: 1px solid #f5f4f2;
-}
-.val-row:last-child { border-bottom: none; }
-.val-icon { font-size: 0.95rem; margin-top: 0.1rem; flex-shrink: 0; line-height: 1.4; }
-.val-name { font-weight: 600; color: #111; font-size: 0.875rem; line-height: 1.35; }
-.val-note { font-size: 0.78rem; color: #aaa; margin-top: 0.08rem; }
 
 /* ─ View link ─ */
 a.view-link {
@@ -292,8 +282,8 @@ a.view-link:hover { text-decoration: underline; }
 /* ─ Share box ─ */
 .share-url {
     background: white;
-    border: 1px solid #e2e0de;
-    border-radius: 7px;
+    border: 1px solid #e4e0ff;
+    border-radius: 8px;
     padding: 0.7rem 1rem;
     font-family: "Menlo", "Monaco", "Courier New", monospace;
     font-size: 0.8rem;
@@ -305,14 +295,14 @@ a.view-link:hover { text-decoration: underline; }
 /* ─ Tabs ─ */
 .stTabs [data-baseweb="tab-list"] {
     gap: 0;
-    border-bottom: 1.5px solid #e0dede;
+    border-bottom: 1.5px solid #ede9ff;
     background: transparent;
 }
 .stTabs [data-baseweb="tab"] {
     border-radius: 0;
     font-size: 0.82rem;
     font-weight: 600;
-    color: #aaa;
+    color: #b0aac8;
     padding: 0.55rem 1.1rem;
     border-bottom: 2px solid transparent;
     background: transparent;
@@ -323,16 +313,14 @@ a.view-link:hover { text-decoration: underline; }
     border-bottom: 2px solid #7C73FF !important;
     background: transparent !important;
 }
-.stTabs [data-baseweb="tab-panel"] {
-    padding: 1rem 0 0 0;
-}
+.stTabs [data-baseweb="tab-panel"] { padding: 1rem 0 0 0; }
 
-/* ─ Download button ─ */
+/* ─ Buttons ─ */
 .stDownloadButton > button {
-    background: #040442 !important;
+    background: #1a1245 !important;
     color: white !important;
     border: none !important;
-    border-radius: 8px !important;
+    border-radius: 9px !important;
     font-weight: 600 !important;
     font-size: 0.875rem !important;
     padding: 0.55rem 1.2rem !important;
@@ -340,97 +328,86 @@ a.view-link:hover { text-decoration: underline; }
     cursor: pointer !important;
     transition: background 0.15s !important;
 }
-.stDownloadButton > button:hover {
-    background: #0a0a6e !important;
-}
+.stDownloadButton > button:hover { background: #2d1f8a !important; }
 
-/* ─ Selectbox labels ─ */
 [data-testid="stSelectbox"] label {
-    font-size: 0.82rem !important;
-    font-weight: 500 !important;
-    color: #555 !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    color: #7a758f !important;
+    letter-spacing: 0.2px !important;
 }
 
-/* ─ Slider label ─ */
 [data-testid="stSlider"] label {
-    font-size: 0.82rem !important;
-    font-weight: 500 !important;
-    color: #555 !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    color: #7a758f !important;
 }
 
-/* ─ Run comparison button ─ */
 [data-testid="stButton"] > button {
-    background: #040442 !important;
+    background: linear-gradient(135deg, #1a1245 0%, #2d1f8a 100%) !important;
     color: white !important;
     border: none !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
+    border-radius: 9px !important;
+    font-weight: 700 !important;
     font-size: 0.9rem !important;
-    padding: 0.55rem 1.5rem !important;
+    padding: 0.6rem 1.6rem !important;
     cursor: pointer !important;
-    transition: background 0.15s !important;
+    transition: opacity 0.15s !important;
+    letter-spacing: 0.2px !important;
 }
-[data-testid="stButton"] > button:hover {
-    background: #0a0a6e !important;
-}
+[data-testid="stButton"] > button:hover { opacity: 0.88 !important; }
 
 /* ─ Live side-by-side ─ */
 .why-box {
-    background: #f7f6ff;
+    background: #f5f3ff;
     border: 1px solid #dcd9ff;
-    border-radius: 7px;
+    border-radius: 8px;
     padding: 0.5rem 0.9rem;
     font-size: 0.81rem;
     color: #555;
     margin: 0.5rem 0 0.8rem 0;
     line-height: 1.5;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
 }
-
 
 .live-col-hdr {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 0.6rem;
-    border-bottom: 1px solid #f0efed;
+    border-bottom: 1px solid #f0eeff;
     margin-bottom: 0.9rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
 }
-.live-col-title { font-weight: 700; color: #111; font-size: 0.88rem; }
+.live-col-title { font-weight: 700; color: #1a1245; font-size: 0.9rem; }
 .live-lbl-base  {
-    font-size: 0.64rem; font-weight: 700; letter-spacing: 1.2px;
-    text-transform: uppercase; color: #bbb;
+    font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #c4bfdf;
 }
 .live-lbl-opt   {
-    font-size: 0.64rem; font-weight: 700; letter-spacing: 1.2px;
-    text-transform: uppercase; color: #1AD598;
+    font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #7C73FF;
 }
-
 
 .live-meta {
     font-size: 0.72rem;
-    color: #999;
+    color: #9590b8;
     margin-top: 0.6rem;
-    padding: 0.4rem 0.7rem;
-    background: #f7f7f7;
-    border-radius: 6px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 0.45rem 0.8rem;
+    background: #f7f5ff;
+    border-radius: 7px;
+    border: 1px solid #ede9ff;
+    font-family: 'Inter', -apple-system, sans-serif;
     line-height: 1.5;
     letter-spacing: 0.1px;
 }
-.live-meta strong { color: #333; font-weight: 700; }
+.live-meta strong { color: #1a1245; font-weight: 700; }
 
-/* ─ Remove gap between col header and chat bubble ─ */
 [data-testid="stChatMessage"] { margin-top: 0 !important; padding-top: 0.3rem !important; }
-
-/* ─ User chat bubble — light background ─ */
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-    background-color: #f5f4f2 !important;
+    background-color: #f5f3ff !important;
     border-radius: 10px !important;
 }
-
-/* ─ Force readable text inside assistant chat bubbles ─ */
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p,
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] li,
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] strong,
@@ -438,40 +415,56 @@ a.view-link:hover { text-decoration: underline; }
     color: #111 !important;
 }
 
+/* ─ Speedup callout ─ */
 .speedup-callout {
     text-align: center;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 500;
-    color: #333;
+    color: #444;
     margin: 1.2rem 0 0.4rem 0;
-    padding: 1.4rem 2rem;
-    background: linear-gradient(135deg, #f4fef9 0%, #faf9ff 100%);
-    border: 1px solid #d0f5e8;
-    border-radius: 12px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 2rem 2rem 1.6rem;
+    background: linear-gradient(135deg, #faf9ff 0%, #f4fffe 100%);
+    border: 1px solid #e4e0ff;
+    border-radius: 16px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    box-shadow: 0 4px 20px rgba(124,115,255,0.08);
+}
+.speedup-num {
+    background: linear-gradient(135deg, #7C73FF 0%, #5b52e8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 5.5rem;
+    font-weight: 900;
+    line-height: 1;
+    display: block;
+    margin: 0.2rem 0 0.5rem;
+    letter-spacing: -3px;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+.speedup-sub {
+    font-size: 0.78rem;
+    color: #b0aac8;
+    margin-top: 0.7rem;
+    display: block;
+    letter-spacing: 0.5px;
+    font-weight: 500;
 }
 
 /* ─ Results reveal box ─ */
 [data-testid="stVerticalBlockBorderWrapper"] {
-    background: #fafafe !important;
-    border: 1.5px solid #e8e6ff !important;
-    border-radius: 14px !important;
+    background: #faf9ff !important;
+    border: 1.5px solid #e4e0ff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 24px rgba(124,115,255,0.07) !important;
 }
-.speedup-num {
-    color: #1AD598;
-    font-size: 2.8rem;
-    font-weight: 900;
-    line-height: 1;
-    display: block;
-    margin: 0.3rem 0;
-    letter-spacing: -1px;
-}
+
 .sim-note {
     text-align: center;
     font-size: 0.72rem;
     color: #bbb;
     margin-top: 0.25rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
 }
 </style>
 """
@@ -938,12 +931,13 @@ def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict, speedup_in_box:
         s = f" · <strong>{tps2:.1f} tok/s</strong>" if tps2 else ""
         ph_m2.markdown(f'<p class="live-meta">TTFT <strong>{ttft2:.0f} ms</strong>{s}</p>',
                        unsafe_allow_html=True)
-    if ttft1 and ttft2 and not speedup_in_box:
-        ratio = ttft1 / max(ttft2, 0.001)
+    if tps1 and tps2 and not speedup_in_box:
+        ratio = tps2 / max(tps1, 0.001)
         ph_speedup.markdown(
             f'<div class="speedup-callout">'
             f'<span class="speedup-num">{ratio:.2f}×</span>'
-            f'faster with Artemis on this prompt'
+            f'<span style="display:block;font-size:1.1rem;font-weight:600;color:#333;margin-bottom:0.3rem">Optimised model ran faster on this prompt</span>'
+            f'<span class="speedup-sub">Same prompt &nbsp;·&nbsp; Same model &nbsp;·&nbsp; Same hardware</span>'
             f'</div>',
             unsafe_allow_html=True,
         )
@@ -1233,11 +1227,12 @@ def render_correctness(data: dict):
 
 def render_cross_hardware(data: dict):
     st.markdown('<hr class="section-sep">', unsafe_allow_html=True)
-    st.markdown('<p class="slabel">Cross-Hardware Results</p>', unsafe_allow_html=True)
+    st.markdown('<p class="slabel">Built for Your Stack</p>', unsafe_allow_html=True)
     st.markdown(
         '<p style="font-size:0.82rem;color:#aaa;margin:0 0 1rem 0;'
         'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
-        'Same model on every hardware Artemis has tuned — proves the optimization is safe to merge.'
+        'Each optimization is purpose-built for a specific hardware + model combo — '
+        'we have a version for your exact setup.'
         '</p>',
         unsafe_allow_html=True,
     )
@@ -1248,17 +1243,15 @@ def render_cross_hardware(data: dict):
     tbody = ""
     for hw in entries:
         d_pct    = hw.get("throughput_delta_pct", 0)
-        acc_d    = hw.get("accuracy_delta", 0)
-        acc_str  = f"±{abs(acc_d):.2f} MMLU" if acc_d == 0 else (f"+{acc_d:.2f} MMLU" if acc_d > 0 else f"{acc_d:.2f} MMLU")
         pbar     = progress_bar_html(d_pct, max_delta)
         link     = f'<a class="view-link" href="?config={hw["config_id"]}">View →</a>' if hw.get("config_id") else ""
         tbody += (
             f'<tr>'
-            f'<td class="hw-class">{hw.get("class","")}</td>'
-            f'<td><span class="hw-name">{hw["hardware"]}</span>&nbsp;{tier_badge(hw.get("spec_tier",""))}</td>'
+            f'<td><span class="hw-name">{hw.get("model","")}</span></td>'
+            f'<td><span class="hw-name">{hw.get("hardware","")}</span>&nbsp;{tier_badge(hw.get("spec_tier",""))}</td>'
             f'<td style="color:#666">{hw.get("framework","")}</td>'
+            f'<td style="color:#888;font-size:0.82rem">{hw.get("optimization","")}</td>'
             f'<td>{pbar}</td>'
-            f'<td style="color:#888;font-size:0.82rem">{acc_str}</td>'
             f'<td>{verdict_html(hw.get("verdict",""))}</td>'
             f'<td>{link}</td>'
             f'</tr>'
@@ -1268,8 +1261,8 @@ def render_cross_hardware(data: dict):
         '<div class="hw-wrap">'
         '<table class="hw-table">'
         '<thead><tr>'
-        '<th>Class</th><th>Hardware</th><th>Framework</th>'
-        '<th>Throughput Δ</th><th>Accuracy</th><th>Verdict</th><th></th>'
+        '<th>Model</th><th>Hardware</th><th>Framework</th>'
+        '<th>Optimization</th><th>Throughput Δ</th><th>Verdict</th><th></th>'
         '</tr></thead>'
         f'<tbody>{tbody}</tbody>'
         '</table></div>'
@@ -1403,7 +1396,7 @@ _SCENARIO_LABELS = {"small_prompt": "Small Prompt", "large_prompt": "Large Promp
 _COL_BASE = "#1AD598"
 _COL_OPT  = "#7C73FF"
 
-def _bar_chart(labels, base_vals, opt_vals, title, unit, lower_is_better=False):
+def _bar_chart(labels, base_vals, opt_vals, title, unit):
     fig = go.Figure()
     fig.add_trace(go.Bar(
         name="Baseline",
@@ -1423,10 +1416,8 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit, lower_is_better=False):
         textposition="outside",
         textfont=dict(size=11, color="#7C73FF"),
     ))
-    note = "lower is better" if lower_is_better else "higher is better"
     fig.update_layout(
-        title=dict(text=f"{title} <sup style='color:#aaa;font-size:11px'>({note})</sup>",
-                   font=dict(size=14, color="#111"), x=0),
+        title=dict(text=title, font=dict(size=13, color="#333"), x=0),
         barmode="group",
         bargap=0.25,
         bargroupgap=0.08,
@@ -1467,12 +1458,12 @@ def render_cost_savings(data: dict):
     c1, c2, c3, c4 = st.columns(4)
     def _card(col, label, value, sub, accent="#111"):
         col.markdown(
-            f'<div style="background:white;border:1px solid #e2e0de;border-radius:10px;'
-            f'padding:1.1rem 1.2rem;{F}">'
-            f'<div style="font-size:0.63rem;font-weight:700;letter-spacing:1.4px;'
-            f'text-transform:uppercase;color:#aaa;margin-bottom:0.5rem">{label}</div>'
-            f'<div style="font-size:1.7rem;font-weight:900;color:{accent};line-height:1">{value}</div>'
-            f'<div style="font-size:0.72rem;color:#aaa;margin-top:0.4rem">{sub}</div>'
+            f'<div style="background:white;border:1px solid #e8e4ff;border-radius:12px;'
+            f'box-shadow:0 2px 10px rgba(124,115,255,0.06);padding:1.1rem 1.2rem;{F}">'
+            f'<div style="font-size:0.6rem;font-weight:700;letter-spacing:1.6px;'
+            f'text-transform:uppercase;color:#c4bfdf;margin-bottom:0.55rem">{label}</div>'
+            f'<div style="font-size:1.85rem;font-weight:900;color:{accent};line-height:1;letter-spacing:-0.5px">{value}</div>'
+            f'<div style="font-size:0.72rem;color:#b0aac8;margin-top:0.45rem">{sub}</div>'
             f'</div>',
             unsafe_allow_html=True,
         )
@@ -1500,12 +1491,12 @@ def render_performance_charts(data: dict):
     ch1, ch2 = st.columns(2, gap="medium")
     with ch1:
         st.plotly_chart(
-            _bar_chart(labels, tput_base, tput_opt, "Throughput", "tok/s", lower_is_better=False),
+            _bar_chart(labels, tput_base, tput_opt, "Throughput (higher is better)", "tok/s"),
             use_container_width=True, config={"displayModeBar": False},
         )
     with ch2:
         st.plotly_chart(
-            _bar_chart(labels, ttft_base, ttft_opt, "Time to First Token", "ms", lower_is_better=True),
+            _bar_chart(labels, ttft_base, ttft_opt, "Time to First Token (lower is better)", "ms"),
             use_container_width=True, config={"displayModeBar": False},
         )
 
@@ -1561,8 +1552,8 @@ def render_accuracy(data: dict):
             layer_num   = layer_icons[i] if i < len(layer_icons) else str(i + 1)
 
             col.markdown(
-                f'<div style="background:white;border:1px solid {card_border};border-radius:10px;'
-                f'padding:1.1rem 1rem;height:100%;'
+                f'<div style="background:white;border:1.5px solid {card_border};border-radius:12px;'
+                f'box-shadow:0 2px 10px rgba(124,115,255,0.05);padding:1.1rem 1rem;height:100%;'
                 f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
 
                 f'<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">'
@@ -1637,12 +1628,13 @@ def main():
         )
         with st.container(border=True):
             r = st.session_state["_live_result"]
-            if r.get("ttft1") and r.get("ttft2"):
-                ratio = r["ttft1"] / max(r["ttft2"], 0.001)
+            if r.get("tps1") and r.get("tps2"):
+                ratio = r["tps2"] / max(r["tps1"], 0.001)
                 st.markdown(
                     f'<div class="speedup-callout" style="margin-top:0">'
                     f'<span class="speedup-num">{ratio:.2f}×</span>'
-                    f'faster with Artemis on this prompt'
+                    f'<span style="display:block;font-size:1.1rem;font-weight:600;color:#333;margin-bottom:0.3rem">Optimised model ran faster on this prompt</span>'
+                    f'<span class="speedup-sub">Same prompt &nbsp;·&nbsp; Same model &nbsp;·&nbsp; Same hardware</span>'
                     f'</div>',
                     unsafe_allow_html=True,
                 )
