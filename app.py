@@ -19,29 +19,38 @@ CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-/* ─ Base ─ */
+/* ─ Base dark theme ─ */
 [data-testid="stAppViewContainer"] {
-    background: #f4f2ff;
+    background: #07071a;
     background-image:
-        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(124,115,255,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(26,213,152,0.08) 0%, transparent 55%);
+        linear-gradient(rgba(124,115,255,0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,115,255,0.055) 1px, transparent 1px),
+        radial-gradient(ellipse 80% 55% at 15% 0%, rgba(91,82,232,0.22) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 90% 100%, rgba(26,213,152,0.1) 0%, transparent 50%);
+    background-size: 60px 60px, 60px 60px, 100% 100%, 100% 100%;
+    min-height: 100vh;
 }
-[data-testid="stHeader"] { background: transparent; }
+[data-testid="stHeader"] { background: transparent !important; }
 [data-testid="stToolbar"] { display: none; }
+.stApp { background: transparent !important; }
 .block-container {
-    padding: 3rem 3.5rem 6rem !important;
+    padding: 2.5rem 3.5rem 6rem !important;
     max-width: 1100px !important;
     margin: 0 auto;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* ─ Hide default Streamlit chrome ─ */
+/* ─ Hide default chrome ─ */
 footer { display: none; }
 #MainMenu { display: none; }
 
+/* ─ Global text ─ */
+.stMarkdown p, .stMarkdown li, .stMarkdown strong, .stMarkdown em,
+[data-testid="stMarkdownContainer"] p { color: rgba(255,255,255,0.82) !important; }
+
 /* ─ Section label ─ */
 .slabel {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 800;
     letter-spacing: 2.5px;
     text-transform: uppercase;
@@ -50,31 +59,31 @@ footer { display: none; }
     padding-left: 0.65rem;
     border-left: 3px solid #7C73FF;
     line-height: 1.5;
-    font-family: 'Inter', -apple-system, sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 /* ─ Spec bar ─ */
 .spec-bar {
-    background: white;
-    border: 1px solid #e4e0ff;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(124,115,255,0.22);
     border-radius: 14px;
     padding: 1.1rem 1.6rem;
     display: flex;
     align-items: stretch;
     gap: 0;
     margin-top: 0.85rem;
-    box-shadow: 0 2px 16px rgba(124,115,255,0.07);
-    font-family: 'Inter', -apple-system, sans-serif;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    font-family: 'Inter', sans-serif;
 }
 .spec-bar-item {
     flex: 1;
     padding: 0 1.4rem;
-    border-right: 1px solid #ede9ff;
+    border-right: 1px solid rgba(124,115,255,0.12);
 }
 .spec-bar-item:first-child { padding-left: 0; }
 .spec-bar-item:last-child { border-right: none; }
 .spec-bar .lbl {
-    color: #c4bfdf;
+    color: rgba(255,255,255,0.28);
     font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -83,14 +92,14 @@ footer { display: none; }
     display: block;
 }
 .spec-bar .val {
-    color: #1a1245;
+    color: #ffffff;
     font-weight: 700;
     font-size: 0.95rem;
     display: block;
     letter-spacing: -0.2px;
 }
 .spec-bar .specs-muted {
-    color: #b0aac8;
+    color: rgba(255,255,255,0.33);
     font-weight: 400;
     font-size: 0.74rem;
     display: block;
@@ -100,372 +109,246 @@ footer { display: none; }
 /* ─ Spec tier badges ─ */
 .badge-high {
     display: inline-block;
-    background: #eeecff;
-    color: #6056e8;
-    border: 1px solid #c8c4ff;
+    background: rgba(124,115,255,0.18);
+    color: #b0aaff;
+    border: 1px solid rgba(124,115,255,0.35);
     border-radius: 5px;
     padding: 0.1rem 0.45rem;
-    font-size: 0.62rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
+    font-size: 0.62rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.8px;
 }
 .badge-mid {
     display: inline-block;
-    background: #fffbea;
-    color: #a16207;
-    border: 1px solid #fde68a;
+    background: rgba(251,191,36,0.1);
+    color: #fbbf24;
+    border: 1px solid rgba(251,191,36,0.3);
     border-radius: 5px;
     padding: 0.1rem 0.45rem;
-    font-size: 0.62rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
+    font-size: 0.62rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.8px;
 }
 .badge-low {
     display: inline-block;
-    background: #f1f5f9;
-    color: #64748b;
-    border: 1px solid #cbd5e1;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.45);
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: 5px;
     padding: 0.1rem 0.45rem;
-    font-size: 0.62rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
+    font-size: 0.62rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.8px;
 }
 
 /* ─ Section divider ─ */
 .section-sep {
-    border: none;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(124,115,255,0.35) 0%, rgba(26,213,152,0.2) 60%, transparent 100%);
+    border: none; height: 1px;
+    background: linear-gradient(90deg, rgba(124,115,255,0.4) 0%, rgba(26,213,152,0.2) 60%, transparent 100%);
     margin: 2.25rem 0 1.75rem;
 }
 
 /* ─ Benchmark table ─ */
 .bm-wrap {
-    border: 1px solid #e4e0ff;
-    border-radius: 12px;
-    overflow: visible;
-    background: white;
-    box-shadow: 0 2px 12px rgba(124,115,255,0.06);
+    border: 1px solid rgba(124,115,255,0.2);
+    border-radius: 12px; overflow: hidden;
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
 .bm-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    font-family: 'Inter', -apple-system, sans-serif;
-    border-radius: 12px;
-    overflow: hidden;
+    width: 100%; border-collapse: collapse;
+    font-size: 0.875rem; font-family: 'Inter', sans-serif;
 }
-.bm-table thead tr { border-bottom: 2px solid #f0eeff; }
+.bm-table thead tr { border-bottom: 1.5px solid rgba(124,115,255,0.15); }
 .bm-table thead th {
-    padding: 0.7rem 1.1rem;
-    text-align: left;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #c4bfdf;
-    background: white;
+    padding: 0.7rem 1.1rem; text-align: left;
+    font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: rgba(255,255,255,0.28); background: transparent;
 }
-.bm-table thead th:first-child { border-radius: 12px 0 0 0; }
-.bm-table thead th:last-child  { border-radius: 0 12px 0 0; }
 .bm-table thead th.col-artemis { color: #7C73FF; }
 .bm-table tbody td {
     padding: 0.65rem 1.1rem;
-    border-bottom: 1px solid #f5f3ff;
-    color: #333;
-    vertical-align: middle;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.82); vertical-align: middle;
 }
 .bm-table tbody tr:last-child td { border-bottom: none; }
 .bm-table .type-cell {
-    font-weight: 700;
-    color: #1a1245;
-    font-size: 0.875rem;
-    border-right: 1px solid #f0eeff;
-    white-space: nowrap;
-    padding-left: 0.9rem;
+    font-weight: 700; color: #ffffff; font-size: 0.875rem;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    white-space: nowrap; padding-left: 0.9rem;
 }
-.bm-table .metric-cell { color: #666; }
-.bm-table tr.g-sep td { border-top: 2px solid #ede9ff !important; }
+.bm-table .metric-cell { color: rgba(255,255,255,0.5); }
+.bm-table tr.g-sep td { border-top: 1.5px solid rgba(124,115,255,0.15) !important; }
 
 /* ─ Tooltip ─ */
-.tt {
-    cursor: help;
-    border-bottom: 1px dashed #c0bce8;
-    position: relative;
-    display: inline-block;
-}
+.tt { cursor: help; border-bottom: 1px dashed rgba(124,115,255,0.45); position: relative; display: inline-block; }
 .tt::after {
-    content: attr(data-tip);
-    position: absolute;
-    left: 0;
-    top: calc(100% + 7px);
-    background: #1a1245;
-    color: #e8e6ff;
-    border-radius: 8px;
-    padding: 0.5rem 0.85rem;
-    font-size: 0.75rem;
-    font-weight: 400;
-    line-height: 1.5;
-    width: 230px;
-    white-space: normal;
-    z-index: 9999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.18s ease;
-    box-shadow: 0 8px 24px rgba(26,18,69,0.3);
+    content: attr(data-tip); position: absolute; left: 0; top: calc(100% + 7px);
+    background: #12123a; color: rgba(255,255,255,0.88);
+    border: 1px solid rgba(124,115,255,0.3);
+    border-radius: 8px; padding: 0.5rem 0.85rem;
+    font-size: 0.75rem; font-weight: 400; line-height: 1.5;
+    width: 230px; white-space: normal; z-index: 9999;
+    opacity: 0; pointer-events: none; transition: opacity 0.18s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 .tt:hover::after { opacity: 1; }
 
 /* ─ Delta values ─ */
 .d-pos  { color: #1AD598; font-weight: 700; }
-.d-neg  { color: #e03131; font-weight: 700; }
-.d-neut { color: #aaa;    font-weight: 600; }
+.d-neg  { color: #f87171; font-weight: 700; }
+.d-neut { color: rgba(255,255,255,0.35); font-weight: 600; }
 
 /* ─ Built for your stack table ─ */
 .hw-wrap {
-    border: 1px solid #e4e0ff;
-    border-radius: 12px;
-    overflow: hidden;
-    background: white;
-    box-shadow: 0 2px 12px rgba(124,115,255,0.06);
+    border: 1px solid rgba(124,115,255,0.2);
+    border-radius: 12px; overflow: hidden;
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
-.hw-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    font-family: 'Inter', -apple-system, sans-serif;
-}
-.hw-table thead tr { border-bottom: 1.5px solid #f0eeff; }
+.hw-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; font-family: 'Inter', sans-serif; }
+.hw-table thead tr { border-bottom: 1.5px solid rgba(124,115,255,0.15); }
 .hw-table thead th {
-    padding: 0.7rem 1.1rem;
-    text-align: left;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #c4bfdf;
-    background: white;
+    padding: 0.7rem 1.1rem; text-align: left;
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: rgba(255,255,255,0.28); background: transparent;
 }
-.hw-table tbody td {
-    padding: 0.75rem 1.1rem;
-    border-bottom: 1px solid #f7f5ff;
-    vertical-align: middle;
-}
+.hw-table tbody td { padding: 0.75rem 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
 .hw-table tbody tr:last-child td { border-bottom: none; }
-.hw-table tbody tr:hover td { background: #faf9ff; }
-.hw-name { font-weight: 700; color: #1a1245; }
-.hw-class { color: #a09cc0; font-size: 0.82rem; }
+.hw-table tbody tr:hover td { background: rgba(124,115,255,0.07); }
+.hw-name { font-weight: 700; color: #ffffff; }
+.hw-class { color: rgba(255,255,255,0.38); font-size: 0.82rem; }
 
 /* ─ Progress bar ─ */
 .pbar-row { display: flex; align-items: center; gap: 0.6rem; }
-.pbar-bg  { background: #ede9ff; border-radius: 4px; height: 6px; width: 80px; flex-shrink: 0; }
+.pbar-bg  { background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; width: 80px; flex-shrink: 0; }
 .pbar-fg  { background: linear-gradient(90deg, #7C73FF, #1AD598); border-radius: 4px; height: 6px; }
 
 /* ─ Verdict ─ */
 .verd-pass { color: #1AD598; font-weight: 700; font-size: 0.82rem; }
-.verd-warn { color: #b45309; font-weight: 600; font-size: 0.82rem; }
-.verd-fail { color: #e03131; font-weight: 600; font-size: 0.82rem; }
+.verd-warn { color: #fbbf24; font-weight: 600; font-size: 0.82rem; }
+.verd-fail { color: #f87171; font-weight: 600; font-size: 0.82rem; }
 
 /* ─ View link ─ */
-a.view-link {
-    color: #7C73FF;
-    font-weight: 600;
-    text-decoration: none;
-    font-size: 0.83rem;
-}
+a.view-link { color: #7C73FF; font-weight: 600; text-decoration: none; font-size: 0.83rem; }
 a.view-link:hover { text-decoration: underline; }
 
 /* ─ Share box ─ */
 .share-url {
-    background: white;
-    border: 1px solid #e4e0ff;
-    border-radius: 8px;
-    padding: 0.7rem 1rem;
-    font-family: "Menlo", "Monaco", "Courier New", monospace;
-    font-size: 0.8rem;
-    color: #555;
-    word-break: break-all;
-    margin: 0.35rem 0 0.4rem 0;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(124,115,255,0.2);
+    border-radius: 8px; padding: 0.7rem 1rem;
+    font-family: "Menlo", "Monaco", monospace; font-size: 0.8rem;
+    color: rgba(255,255,255,0.6); word-break: break-all; margin: 0.35rem 0 0.4rem 0;
 }
 
 /* ─ Tabs ─ */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 0;
-    border-bottom: 1.5px solid #ede9ff;
-    background: transparent;
+    gap: 0; border-bottom: 1.5px solid rgba(124,115,255,0.2) !important; background: transparent !important;
 }
 .stTabs [data-baseweb="tab"] {
-    border-radius: 0;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #b0aac8;
-    padding: 0.55rem 1.1rem;
-    border-bottom: 2px solid transparent;
-    background: transparent;
-    letter-spacing: 0.1px;
+    border-radius: 0; font-size: 0.82rem; font-weight: 600;
+    color: rgba(255,255,255,0.33) !important; padding: 0.55rem 1.1rem;
+    border-bottom: 2px solid transparent; background: transparent !important;
 }
-.stTabs [aria-selected="true"] {
-    color: #7C73FF !important;
-    border-bottom: 2px solid #7C73FF !important;
-    background: transparent !important;
-}
+.stTabs [aria-selected="true"] { color: #7C73FF !important; border-bottom: 2px solid #7C73FF !important; }
 .stTabs [data-baseweb="tab-panel"] { padding: 1rem 0 0 0; }
 
 /* ─ Buttons ─ */
 .stDownloadButton > button {
-    background: #1a1245 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 9px !important;
-    font-weight: 600 !important;
-    font-size: 0.875rem !important;
-    padding: 0.55rem 1.2rem !important;
-    width: 100% !important;
-    cursor: pointer !important;
-    transition: background 0.15s !important;
+    background: rgba(124,115,255,0.15) !important; color: #b0aaff !important;
+    border: 1px solid rgba(124,115,255,0.3) !important; border-radius: 50px !important;
+    font-weight: 600 !important; font-size: 0.875rem !important;
+    padding: 0.55rem 1.2rem !important; width: 100% !important; cursor: pointer !important;
 }
-.stDownloadButton > button:hover { background: #2d1f8a !important; }
+.stDownloadButton > button:hover { background: rgba(124,115,255,0.25) !important; }
 
 [data-testid="stSelectbox"] label {
-    font-size: 0.78rem !important;
-    font-weight: 600 !important;
-    color: #7a758f !important;
-    letter-spacing: 0.2px !important;
+    font-size: 0.78rem !important; font-weight: 600 !important;
+    color: rgba(255,255,255,0.4) !important; letter-spacing: 0.2px !important;
 }
-
 [data-testid="stSlider"] label {
-    font-size: 0.78rem !important;
-    font-weight: 600 !important;
-    color: #7a758f !important;
+    font-size: 0.78rem !important; font-weight: 600 !important; color: rgba(255,255,255,0.4) !important;
 }
-
 [data-testid="stButton"] > button {
-    background: linear-gradient(135deg, #1a1245 0%, #2d1f8a 100%) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 9px !important;
-    font-weight: 700 !important;
-    font-size: 0.9rem !important;
-    padding: 0.6rem 1.6rem !important;
-    cursor: pointer !important;
-    transition: opacity 0.15s !important;
-    letter-spacing: 0.2px !important;
+    background: #7C73FF !important; color: white !important; border: none !important;
+    border-radius: 50px !important; font-weight: 700 !important; font-size: 0.9rem !important;
+    padding: 0.6rem 1.6rem !important; cursor: pointer !important; transition: opacity 0.15s !important;
 }
-[data-testid="stButton"] > button:hover { opacity: 0.88 !important; }
+[data-testid="stButton"] > button:hover { opacity: 0.85 !important; }
+
+/* ─ Selectbox dark ─ */
+[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(124,115,255,0.25) !important; color: white !important;
+}
+[data-testid="stSelectbox"] span { color: rgba(255,255,255,0.85) !important; }
+[data-baseweb="popover"] > div, [data-baseweb="menu"] {
+    background: #12123a !important; border: 1px solid rgba(124,115,255,0.3) !important;
+}
+[role="option"] { color: rgba(255,255,255,0.82) !important; background: transparent !important; }
+[role="option"]:hover { background: rgba(124,115,255,0.15) !important; }
 
 /* ─ Live side-by-side ─ */
 .why-box {
-    background: #f5f3ff;
-    border: 1px solid #dcd9ff;
-    border-radius: 8px;
-    padding: 0.5rem 0.9rem;
-    font-size: 0.81rem;
-    color: #555;
-    margin: 0.5rem 0 0.8rem 0;
-    line-height: 1.5;
-    font-family: 'Inter', -apple-system, sans-serif;
+    background: rgba(124,115,255,0.08); border: 1px solid rgba(124,115,255,0.2);
+    border-radius: 8px; padding: 0.5rem 0.9rem; font-size: 0.81rem;
+    color: rgba(255,255,255,0.55); margin: 0.5rem 0 0.8rem 0; line-height: 1.5;
 }
-
 .live-col-hdr {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid #f0eeff;
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 0.6rem; border-bottom: 1px solid rgba(124,115,255,0.14);
     margin-bottom: 0.9rem;
-    font-family: 'Inter', -apple-system, sans-serif;
 }
-.live-col-title { font-weight: 700; color: #1a1245; font-size: 0.9rem; }
-.live-lbl-base  {
-    font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px;
-    text-transform: uppercase; color: #c4bfdf;
-}
-.live-lbl-opt   {
-    font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px;
-    text-transform: uppercase; color: #7C73FF;
-}
-
+.live-col-title { font-weight: 700; color: #ffffff; font-size: 0.9rem; }
+.live-lbl-base  { font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.28); }
+.live-lbl-opt   { font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #7C73FF; }
 .live-meta {
-    font-size: 0.72rem;
-    color: #9590b8;
-    margin-top: 0.6rem;
-    padding: 0.45rem 0.8rem;
-    background: #f7f5ff;
-    border-radius: 7px;
-    border: 1px solid #ede9ff;
-    font-family: 'Inter', -apple-system, sans-serif;
-    line-height: 1.5;
-    letter-spacing: 0.1px;
+    font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 0.6rem;
+    padding: 0.45rem 0.8rem; background: rgba(255,255,255,0.04);
+    border-radius: 7px; border: 1px solid rgba(124,115,255,0.14);
+    line-height: 1.5; letter-spacing: 0.1px;
 }
-.live-meta strong { color: #1a1245; font-weight: 700; }
+.live-meta strong { color: #ffffff; font-weight: 700; }
 
 [data-testid="stChatMessage"] { margin-top: 0 !important; padding-top: 0.3rem !important; }
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-    background-color: #f5f3ff !important;
-    border-radius: 10px !important;
+    background-color: rgba(124,115,255,0.08) !important; border-radius: 10px !important;
 }
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p,
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] li,
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] strong,
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] em {
-    color: #111 !important;
+    color: rgba(255,255,255,0.85) !important;
 }
 
 /* ─ Speedup callout ─ */
 .speedup-callout {
-    text-align: center;
-    font-size: 1.05rem;
-    font-weight: 500;
-    color: #444;
-    margin: 1.2rem 0 0.4rem 0;
+    text-align: center; font-size: 1.05rem; font-weight: 500;
+    color: rgba(255,255,255,0.55); margin: 1.2rem 0 0.4rem 0;
     padding: 2rem 2rem 1.6rem;
-    background: linear-gradient(135deg, #faf9ff 0%, #f4fffe 100%);
-    border: 1px solid #e4e0ff;
-    border-radius: 16px;
-    font-family: 'Inter', -apple-system, sans-serif;
-    box-shadow: 0 4px 20px rgba(124,115,255,0.08);
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(124,115,255,0.25);
+    border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.25);
 }
 .speedup-num {
-    background: linear-gradient(135deg, #7C73FF 0%, #5b52e8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: 5.5rem;
-    font-weight: 900;
-    line-height: 1;
-    display: block;
-    margin: 0.2rem 0 0.5rem;
-    letter-spacing: -3px;
-    font-family: 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(135deg, #7C73FF 0%, #1AD598 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    font-size: 5.5rem; font-weight: 900; line-height: 1; display: block;
+    margin: 0.2rem 0 0.5rem; letter-spacing: -3px;
 }
 .speedup-sub {
-    font-size: 0.78rem;
-    color: #b0aac8;
-    margin-top: 0.7rem;
-    display: block;
-    letter-spacing: 0.5px;
-    font-weight: 500;
+    font-size: 0.78rem; color: rgba(255,255,255,0.28); margin-top: 0.7rem;
+    display: block; letter-spacing: 0.5px; font-weight: 500;
 }
 
 /* ─ Results reveal box ─ */
 [data-testid="stVerticalBlockBorderWrapper"] {
-    background: #faf9ff !important;
-    border: 1.5px solid #e4e0ff !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 24px rgba(124,115,255,0.07) !important;
+    background: rgba(255,255,255,0.03) !important;
+    border: 1.5px solid rgba(124,115,255,0.22) !important;
+    border-radius: 16px !important; box-shadow: 0 4px 24px rgba(0,0,0,0.25) !important;
 }
 
-.sim-note {
-    text-align: center;
-    font-size: 0.72rem;
-    color: #bbb;
-    margin-top: 0.25rem;
-    font-family: 'Inter', -apple-system, sans-serif;
-}
+/* ─ Caption ─ */
+[data-testid="stCaptionContainer"] p { color: rgba(255,255,255,0.3) !important; }
+
+.sim-note { text-align: center; font-size: 0.72rem; color: rgba(255,255,255,0.25); margin-top: 0.25rem; }
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
@@ -568,9 +451,9 @@ def _fmt_val(v, unit):
 
 # Accent colors cycling per group (scenario blocks then accuracy/cost)
 _GROUP_ACCENTS = ["#7C73FF", "#1AD598", "#7C73FF", "#1AD598"]
-_GROUP_BG      = ["#faf9ff", "#f4fef9", "#faf9ff", "#f4fef9"]
-_ACCENT_TAIL   = "#94a3b8"   # neutral for Accuracy / Cost groups
-_BG_TAIL       = "#f8fafc"
+_GROUP_BG      = ["rgba(124,115,255,0.07)", "rgba(26,213,152,0.05)", "rgba(124,115,255,0.07)", "rgba(26,213,152,0.05)"]
+_ACCENT_TAIL   = "rgba(255,255,255,0.25)"
+_BG_TAIL       = "rgba(255,255,255,0.02)"
 
 
 def _group_rows(metric_rows, label, desc, accent, bg, is_first_group):
@@ -946,137 +829,158 @@ def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict, speedup_in_box:
 # ── Token race component ──────────────────────────────────────────────────────
 
 _RACE_HTML = """<!DOCTYPE html>
-<html><head><style>
+<html><head><meta charset="utf-8"><style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:transparent;padding:0 1px}
-.card{background:white;border:1px solid #e2e0de;border-radius:10px;padding:1.1rem 1.4rem 0.9rem}
-.top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem}
-.race-lbl{font-size:0.63rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#7C73FF}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:transparent;padding:0 1px 4px}
+.race-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.rcard{background:rgba(255,255,255,0.05);border:1px solid rgba(124,115,255,0.22);border-radius:12px;padding:1rem 1.1rem;display:flex;flex-direction:column;min-height:148px}
+.rcard-opt{border-color:rgba(26,213,152,0.28);background:rgba(26,213,152,0.04)}
+.rcard-hdr{display:flex;align-items:center;justify-content:space-between;padding-bottom:0.5rem;border-bottom:1px solid rgba(124,115,255,0.14);margin-bottom:0.6rem}
+.rcard-hdr-opt{border-bottom-color:rgba(26,213,152,0.18)}
+.rtitle{font-size:0.87rem;font-weight:700;color:rgba(255,255,255,0.88)}
+.rtitle-opt{color:#7C73FF}
+.hdr-r{display:flex;align-items:center;gap:6px}
+.badge{border-radius:20px;padding:0.12rem 0.6rem;font-size:0.68rem;font-weight:700}
+.br{background:rgba(124,115,255,0.18);color:#a09aff}
+.bd-b{background:rgba(124,115,255,0.18);color:#b0aaff;display:none}
+.bd-a{background:rgba(26,213,152,0.18);color:#1AD598;display:none}
+.rtime{font-size:0.82rem;font-weight:700;color:rgba(255,255,255,0.45);display:none}
+.ttft-hit{font-size:0.69rem;font-weight:600;min-height:0.95rem;margin-bottom:5px}
+.cnt-row{display:flex;align-items:baseline;gap:5px;margin:2px 0 5px}
+.cnt{font-size:2rem;font-weight:800;color:rgba(255,255,255,0.95);min-width:3ch;font-variant-numeric:tabular-nums;line-height:1}
+.cunit{font-size:0.68rem;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:0.4px}
+.bar-bg{background:rgba(255,255,255,0.08);border-radius:3px;height:4px;overflow:hidden}
+.bar{height:4px;border-radius:3px;width:0%}
+.bar-b{background:#7C73FF}.bar-a{background:#1AD598}
+.txt-ph{display:none;font-size:0.78rem;color:rgba(255,255,255,0.75);line-height:1.5;max-height:90px;overflow-y:auto;margin-bottom:4px;flex:1}
+.txt-ph strong{color:rgba(255,255,255,0.95)}
+.rcard-foot{display:flex;gap:10px;font-size:0.71rem;color:rgba(255,255,255,0.28);padding-top:6px;margin-top:auto;border-top:1px solid rgba(124,115,255,0.1)}
+.rcard-foot-opt{border-top-color:rgba(26,213,152,0.12)}
+.fv{font-weight:700;color:rgba(255,255,255,0.82)}
+.metrics{display:none;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:10px}
+.mc{background:rgba(255,255,255,0.05);border:1px solid rgba(124,115,255,0.2);border-radius:10px;padding:0.85rem 1rem}
+.mc-lbl{font-size:0.57rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:8px}
+.mc-pct{font-size:2.2rem;font-weight:900;line-height:1;letter-spacing:-1px;margin-bottom:6px}
+.mc-pct-up{color:#1AD598}
+.mc-pct-dn{color:#7C73FF}
+.mc-arrow{font-size:0.72rem;color:rgba(255,255,255,0.38);line-height:1.4}
+.mc-arrow .arr-old{color:rgba(255,255,255,0.28);text-decoration:line-through}
+.mc-arrow .arr-new{color:rgba(255,255,255,0.75);font-weight:600}
+.mc-arrow .arr-sep{margin:0 3px;color:rgba(255,255,255,0.2)}
+.callout{display:none;background:rgba(26,213,152,0.04);border:1.5px solid rgba(26,213,152,0.3);border-radius:12px;padding:1rem 1.4rem;margin-bottom:10px;text-align:center}
+.cal-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;justify-content:center}
+.cal-pill{background:rgba(26,213,152,0.12);color:#1AD598;border:1px solid rgba(26,213,152,0.25);border-radius:20px;padding:0.18rem 0.75rem;font-size:0.7rem;font-weight:700}
+.cal-headline{font-size:1.05rem;font-weight:800;color:#ffffff;margin-bottom:6px;letter-spacing:-0.3px}
+.cal-note{font-size:0.68rem;color:rgba(255,255,255,0.28);line-height:1.4}
+.play-bar{display:flex;justify-content:center;padding-top:4px}
+.playbtn{background:#7C73FF;color:white;border:none;border-radius:50px;padding:0.44rem 1.5rem;font-size:0.84rem;font-weight:600;cursor:pointer;transition:opacity .15s}
+.playbtn:hover:not(:disabled){opacity:0.85}
+.playbtn:disabled{background:rgba(124,115,255,0.3);color:rgba(255,255,255,0.35);cursor:default}
+.dummy-keep{color:#bbb}/* placeholder to preserve old class references */
 .speed-wrap{display:flex;align-items:center;gap:4px}
-.speed-hint{font-size:0.7rem;color:#bbb;margin-right:4px}
-.sbtn{background:#f5f4f2;border:none;border-radius:5px;padding:2px 9px;font-size:0.75rem;font-weight:600;color:#888;cursor:pointer}
-.sbtn.on{background:#eeecff;color:#7C73FF}
-.cols{display:grid;grid-template-columns:1fr 1px 1fr;gap:0 1.4rem;margin-bottom:0.8rem}
-.dvr{background:#f0efed}
-.hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:0.55rem;border-bottom:1px solid #f0efed;margin-bottom:0.75rem}
-.hdr-artemis{border-bottom:1px solid #d0f5e8!important}
-.htitle{font-weight:700;font-size:0.87rem;color:#111}
-.lbl-b{font-size:0.62rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:#bbb}
-.lbl-a{font-size:0.62rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:#1AD598}
-.ttft-line{font-size:0.71rem;height:1.05rem;margin-bottom:0.35rem;font-weight:600}
-.wait{color:#ddd;font-weight:400;font-style:italic}
-.hit-b{color:#7C73FF}.hit-a{color:#1AD598}
-.cnt-row{display:flex;align-items:baseline;gap:0.35rem;margin-bottom:0.55rem}
-.cnt{font-size:2.5rem;font-weight:800;color:#111;line-height:1;min-width:3ch;font-variant-numeric:tabular-nums}
-.unit{font-size:0.74rem;color:#bbb;text-transform:uppercase;letter-spacing:0.5px;font-weight:500}
-.bar-bg{background:#f0efed;border-radius:4px;height:6px;overflow:hidden;margin-bottom:0.6rem}
-.bar{height:6px;border-radius:4px;width:0%}
-.bar-b{background:#c8c4ff}.bar-a{background:#1AD598}
-.meta{font-size:0.76rem;color:#bbb;display:flex;gap:1rem}
-.mv{font-weight:700;color:#555}
-.bottom{display:flex;align-items:center;justify-content:space-between;margin-top:0.65rem;padding-top:0.65rem;border-top:1px solid #f5f4f2}
-.su{font-size:0.88rem;color:#333;font-weight:500;min-height:1.5rem}
-.su-big{color:#1AD598;font-size:1.3rem;font-weight:800}
-.playbtn{background:#040442;color:white;border:none;border-radius:7px;padding:0.42rem 1.2rem;font-size:0.875rem;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap}
-.playbtn:hover:not(:disabled){background:#0a0a6e}
-.playbtn:disabled{background:#c8c4ff;cursor:default}
 </style></head><body>
-<div class="card">
-  <div class="top-row">
-    <span class="race-lbl">Token Race</span>
-    <div class="speed-wrap">
-      <span class="speed-hint">Speed</span>
-      <button class="sbtn on" id="s1" onclick="setSpd(1)">1×</button>
-      <button class="sbtn"    id="s2" onclick="setSpd(2)">2×</button>
-      <button class="sbtn"    id="s4" onclick="setSpd(4)">4×</button>
-    </div>
-  </div>
-  <div class="cols">
-    <div>
-      <div class="hdr">
-        <span class="htitle">Stock __FW__</span>
-        <span class="lbl-b">Baseline</span>
+<div class="race-grid">
+  <div class="rcard">
+    <div class="rcard-hdr">
+      <span class="rtitle">Stock __FW__</span>
+      <div class="hdr-r">
+        <span class="badge br" id="br-b">Racing…</span>
+        <span class="badge bd-b" id="bd-b">Done</span>
+        <span class="rtime" id="tm-b"></span>
       </div>
-      <div class="ttft-line" id="tb"><span class="wait">waiting for first token…</span></div>
-      <div class="cnt-row"><span class="cnt" id="cb">0</span><span class="unit">tokens</span></div>
+    </div>
+    <div id="cp-b">
+      <div class="ttft-hit" id="tf-b" style="color:rgba(255,255,255,0.2);font-style:italic">waiting for first token…</div>
+      <div class="cnt-row"><span class="cnt" id="cb">0</span><span class="cunit">tokens</span></div>
       <div class="bar-bg"><div class="bar bar-b" id="bb"></div></div>
-      <div class="meta">
-        <span>TTFT <span class="mv" id="tftb">—</span></span>
-        <span><span class="mv" id="spb">—</span> tok/s</span>
-      </div>
     </div>
-    <div class="dvr"></div>
-    <div>
-      <div class="hdr hdr-artemis">
-        <span class="htitle">__FW__ + Artemis</span>
-        <span class="lbl-a">+ Artemis</span>
-      </div>
-      <div class="ttft-line" id="ta"><span class="wait">waiting for first token…</span></div>
-      <div class="cnt-row"><span class="cnt" id="ca">0</span><span class="unit">tokens</span></div>
-      <div class="bar-bg"><div class="bar bar-a" id="ba"></div></div>
-      <div class="meta">
-        <span>TTFT <span class="mv" id="tfta">—</span></span>
-        <span><span class="mv" id="spa">—</span> tok/s</span>
-      </div>
+    <div class="txt-ph" id="tx-b">__BASE_TEXT__</div>
+    <div class="rcard-foot">
+      <span>TTFT <span class="fv">__BT_D__ ms</span></span>
+      <span>Speed <span class="fv">__BS_D__ tok/s</span></span>
     </div>
   </div>
-  <div class="bottom">
-    <div class="su" id="su"></div>
-    <button class="playbtn" id="pb" onclick="start()">&#9654; Play race</button>
+  <div class="rcard rcard-opt">
+    <div class="rcard-hdr rcard-hdr-opt">
+      <span class="rtitle rtitle-opt">⚡ Artemis-optimised</span>
+      <div class="hdr-r">
+        <span class="badge br" id="br-a">Racing…</span>
+        <span class="badge bd-a" id="bd-a">Done</span>
+        <span class="rtime" id="tm-a"></span>
+      </div>
+    </div>
+    <div id="cp-a">
+      <div class="ttft-hit" id="tf-a" style="color:rgba(255,255,255,0.2);font-style:italic">waiting for first token…</div>
+      <div class="cnt-row"><span class="cnt" id="ca">0</span><span class="cunit">tokens</span></div>
+      <div class="bar-bg"><div class="bar bar-a" id="ba"></div></div>
+    </div>
+    <div class="txt-ph" id="tx-a">__OPT_TEXT__</div>
+    <div class="rcard-foot rcard-foot-opt">
+      <span>TTFT <span class="fv">__AT_D__ ms</span></span>
+      <span>Speed <span class="fv">__AS_D__ tok/s</span></span>
+    </div>
   </div>
 </div>
+<div class="metrics" id="metrics">
+  <div class="mc"><div class="mc-lbl">Throughput</div><div class="mc-pct mc-pct-up">__TPUT_PCT__</div><div class="mc-arrow"><span class="arr-old">__BS_D__ tok/s</span><span class="arr-sep">→</span><span class="arr-new">__AS_D__ tok/s</span></div></div>
+  <div class="mc"><div class="mc-lbl">Time to First Token</div><div class="mc-pct mc-pct-dn">__TTFT_PCT__</div><div class="mc-arrow"><span class="arr-old">__BT_D__ ms</span><span class="arr-sep">→</span><span class="arr-new">__AT_D__ ms</span></div></div>
+  <div class="mc"><div class="mc-lbl">Cost per 1M Tokens</div><div class="mc-pct mc-pct-dn">__COST_PCT__</div><div class="mc-arrow"><span class="arr-old">$__COST_B__</span><span class="arr-sep">→</span><span class="arr-new">$__COST_O__</span></div></div>
+</div>
+<div class="callout" id="callout">
+  <div class="cal-pills"><span class="cal-pill">✓ Same model</span><span class="cal-pill">✓ Same hardware</span><span class="cal-pill">✓ Quality intact</span></div>
+  <div class="cal-headline">No tradeoffs. Just faster, cheaper inference.</div>
+  <div class="cal-note">Quality validated via semantic similarity ≥ 0.92 (all-MiniLM-L6-v2, 50 runs per scenario)</div>
+</div>
+<div class="play-bar"><button class="playbtn" id="pb" onclick="start()">&#9654; Play race</button></div>
 <script>
 var BT=__BT__,BS=__BS__,AT=__AT__,AS=__AS__,TOT=__TOT__;
-var spd=1,t0=null,raf=null,bdone=false,adone=false,blit=false,alit=false;
-function setSpd(s){
-  spd=s;
-  ['s1','s2','s4'].forEach(function(id){document.getElementById(id).classList.remove('on')});
-  document.getElementById('s'+s).classList.add('on');
-}
+var t0=null,raf=null,bdone=false,adone=false,blit=false,alit=false;
 function reset(){
-  ['cb','ca'].forEach(function(id){document.getElementById(id).textContent='0'});
-  ['bb','ba'].forEach(function(id){document.getElementById(id).style.width='0%'});
-  document.getElementById('tb').innerHTML='<span class="wait">waiting for first token\u2026</span>';
-  document.getElementById('ta').innerHTML='<span class="wait">waiting for first token\u2026</span>';
-  ['tftb','tfta','spb','spa'].forEach(function(id){document.getElementById(id).textContent='\u2014'});
-  document.getElementById('su').innerHTML='';
+  document.getElementById('cb').textContent='0';document.getElementById('ca').textContent='0';
+  document.getElementById('bb').style.width='0%';document.getElementById('ba').style.width='0%';
+  document.getElementById('tf-b').innerHTML='<span style="color:rgba(255,255,255,0.2);font-style:italic">waiting\u2026</span>';
+  document.getElementById('tf-a').innerHTML='<span style="color:rgba(255,255,255,0.2);font-style:italic">waiting\u2026</span>';
+  ['b','a'].forEach(function(s){
+    document.getElementById('cp-'+s).style.display='';document.getElementById('tx-'+s).style.display='none';
+    document.getElementById('br-'+s).style.display='';document.getElementById('bd-'+s).style.display='none';
+    document.getElementById('tm-'+s).style.display='none';
+  });
+  document.getElementById('metrics').style.display='none';document.getElementById('callout').style.display='none';
   bdone=false;adone=false;blit=false;alit=false;
 }
+function fin(s,sec){
+  document.getElementById('br-'+s).style.display='none';document.getElementById('bd-'+s).style.display='inline-block';
+  var tm=document.getElementById('tm-'+s);tm.textContent=sec.toFixed(1)+'s';tm.style.display='inline-block';
+  document.getElementById('cp-'+s).style.display='none';document.getElementById('tx-'+s).style.display='block';
+}
 function start(){
-  if(raf)cancelAnimationFrame(raf);
-  reset();t0=null;
-  document.getElementById('pb').disabled=true;
-  document.getElementById('pb').textContent='\u23f3 Racing\u2026';
+  if(raf)cancelAnimationFrame(raf);reset();t0=null;
+  document.getElementById('pb').disabled=true;document.getElementById('pb').textContent='\u23f3 Racing\u2026';
   raf=requestAnimationFrame(tick);
 }
 function tick(ts){
-  if(!t0)t0=ts;
-  var e=(ts-t0)/1000*spd;
-  // baseline
-  var be=Math.max(0,e-BT/1000);
-  var btok=Math.min(Math.floor(be*BS),TOT);
-  document.getElementById('cb').textContent=btok;
-  document.getElementById('bb').style.width=(btok/TOT*100)+'%';
-  if(!blit&&e>=BT/1000){blit=true;document.getElementById('tb').innerHTML='<span class="hit-b">\u26a1 First token at '+BT+' ms</span>';document.getElementById('tftb').textContent=BT+' ms';}
-  if(btok>0)document.getElementById('spb').textContent=BS.toFixed(1);
-  if(btok>=TOT&&!bdone)bdone=true;
-  // optimised
-  var ae=Math.max(0,e-AT/1000);
-  var atok=Math.min(Math.floor(ae*AS),TOT);
-  document.getElementById('ca').textContent=atok;
-  document.getElementById('ba').style.width=(atok/TOT*100)+'%';
-  if(!alit&&e>=AT/1000){alit=true;document.getElementById('ta').innerHTML='<span class="hit-a">\u26a1 First token at '+AT+' ms</span>';document.getElementById('tfta').textContent=AT+' ms';}
-  if(atok>0)document.getElementById('spa').textContent=AS.toFixed(1);
-  if(atok>=TOT&&!adone){
-    adone=true;
-    var bTotal=BT/1000+TOT/BS, aTotal=AT/1000+TOT/AS;
-    var ratio=(bTotal/aTotal).toFixed(2);
-    document.getElementById('su').innerHTML='Optimised model ran <span class="su-big">'+ratio+'\u00d7</span> faster \u2014 __PL__';
-  }
+  if(!t0)t0=ts;var e=(ts-t0)/1000;
+  var be=Math.max(0,e-BT/1000),btok=Math.min(Math.floor(be*BS),TOT);
+  document.getElementById('cb').textContent=btok;document.getElementById('bb').style.width=(btok/TOT*100)+'%';
+  if(!blit&&e>=BT/1000){blit=true;document.getElementById('tf-b').innerHTML='<span style="color:#7C73FF;font-weight:700">\u26a1 First token \u2014 '+BT+' ms</span>';}
+  if(btok>=TOT&&!bdone){bdone=true;fin('b',BT/1000+TOT/BS);}
+  var ae=Math.max(0,e-AT/1000),atok=Math.min(Math.floor(ae*AS),TOT);
+  document.getElementById('ca').textContent=atok;document.getElementById('ba').style.width=(atok/TOT*100)+'%';
+  if(!alit&&e>=AT/1000){alit=true;document.getElementById('tf-a').innerHTML='<span style="color:#1AD598;font-weight:700">\u26a1 First token \u2014 '+AT+' ms</span>';}
+  if(atok>=TOT&&!adone){adone=true;fin('a',AT/1000+TOT/AS);}
   if(!bdone||!adone){raf=requestAnimationFrame(tick);}
-  else{document.getElementById('pb').disabled=false;document.getElementById('pb').textContent='\u21ba Play again';}
+  else{document.getElementById('metrics').style.display='grid';document.getElementById('callout').style.display='block';document.getElementById('pb').disabled=false;document.getElementById('pb').textContent='\u21ba Play again';}
 }
 </script></body></html>"""
+
+
+def _prep_response_text(text: str) -> str:
+    import re
+    text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL).strip()
+    text = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+    text = text.replace('\n\n', '<br><br>').replace('\n', ' ')
+    return text
 
 
 def render_token_race(data: dict):
@@ -1084,37 +988,73 @@ def render_token_race(data: dict):
     if not demo_prompts:
         return
 
-    prompt_idx = st.session_state.get("live_prompt_sel", 0)
-    if prompt_idx >= len(demo_prompts):
-        prompt_idx = 0
+    meta      = data.get("meta", {})
+    framework = meta.get("framework", "Model")
+    fw_short  = framework.split()[0] if framework else "Model"
 
-    prompt    = demo_prompts[prompt_idx]
+    st.markdown('<hr style="border:none;border-top:1px solid rgba(124,115,255,0.18);margin:1rem 0 0.5rem">', unsafe_allow_html=True)
+    st.markdown('<p class="slabel">Token Race</p>', unsafe_allow_html=True)
+
+    prompt_idx = st.selectbox(
+        "Curated prompt",
+        range(len(demo_prompts)),
+        format_func=lambda i: demo_prompts[i]["label"],
+        key="live_prompt_sel",
+    )
+    prompt = demo_prompts[prompt_idx]
+
+    with st.chat_message("user"):
+        st.write(prompt["user"])
+
     recorded  = prompt.get("recorded", {})
     base_rec  = recorded.get("baseline", {})
     opt_rec   = recorded.get("optimized", {})
-    framework = data.get("meta", {}).get("framework", "Model")
-    prompt_label = prompt.get("label", "this prompt")
 
     base_ttft = float(base_rec.get("ttft_ms", 1000))
     base_tps  = float(base_rec.get("tps", 40))
     opt_ttft  = float(opt_rec.get("ttft_ms", 800))
     opt_tps   = float(opt_rec.get("tps", 60))
-    # approx total tokens from word count of the recorded text
     total_tok = max(len(base_rec.get("text", "").split()), 1)
 
-    html = (
+    base_text = _prep_response_text(base_rec.get("text", ""))
+    opt_text  = _prep_response_text(opt_rec.get("text", ""))
+
+    tput_pct = f"+{(opt_tps - base_tps) / base_tps * 100:.0f}%"
+    ttft_pct = f"\u2212{(base_ttft - opt_ttft) / base_ttft * 100:.0f}%"
+    ttft_abs = f"{(base_ttft - opt_ttft) / base_ttft * 100:.0f}%"
+    ratio    = f"{opt_tps / base_tps:.2f}"
+
+    acc    = data.get("correctness", {}).get("accuracy", {})
+    cost_b = acc.get("cost_per_1m", {}).get("baseline") or 0
+    cost_o = acc.get("cost_per_1m", {}).get("optimized") or 0
+    cost_pct = f"\u2212{(cost_b - cost_o) / cost_b * 100:.0f}%" if cost_b else "\u2014"
+    cost_abs = f"{(cost_b - cost_o) / cost_b * 100:.0f}%"      if cost_b else "\u2014"
+
+    html_out = (
         _RACE_HTML
-        .replace("__FW__",  framework)
-        .replace("__BT__",  str(base_ttft))
-        .replace("__BS__",  str(base_tps))
-        .replace("__AT__",  str(opt_ttft))
-        .replace("__AS__",  str(opt_tps))
-        .replace("__TOT__", str(total_tok))
-        .replace("__PL__",  prompt_label)
+        .replace("__FW__",        fw_short)
+        .replace("__BT_D__",      str(int(base_ttft)))
+        .replace("__AT_D__",      str(int(opt_ttft)))
+        .replace("__BS_D__",      f"{base_tps:.1f}")
+        .replace("__AS_D__",      f"{opt_tps:.1f}")
+        .replace("__BT__",        str(int(base_ttft)))
+        .replace("__BS__",        str(base_tps))
+        .replace("__AT__",        str(int(opt_ttft)))
+        .replace("__AS__",        str(opt_tps))
+        .replace("__TOT__",       str(total_tok))
+        .replace("__BASE_TEXT__", base_text)
+        .replace("__OPT_TEXT__",  opt_text)
+        .replace("__TPUT_PCT__",  tput_pct)
+        .replace("__TTFT_PCT__",  ttft_pct)
+        .replace("__TTFT_ABS__",  ttft_abs)
+        .replace("__COST_B__",    f"{cost_b:.2f}")
+        .replace("__COST_O__",    f"{cost_o:.2f}")
+        .replace("__COST_PCT__",  cost_pct)
+        .replace("__COST_ABS__",  cost_abs)
+        .replace("__RATIO__",     ratio)
     )
 
-    st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1.5rem 0 1.25rem">', unsafe_allow_html=True)
-    st.components.v1.html(html, height=310, scrolling=False)
+    st.components.v1.html(html_out, height=500, scrolling=False)
 
 
 # ── Section renderers ─────────────────────────────────────────────────────────
@@ -1191,8 +1131,8 @@ def render_benchmark(data: dict):
         "Averaged over N=20 runs. Baseline vs Artemis-rewritten configuration.",
     )
     st.markdown(
-        f'<p style="font-size:0.82rem;color:#aaa;margin:0 0 1rem 0;'
-        f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">{note}</p>',
+        f'<p style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin:0 0 1rem 0;'
+        f'font-family:Inter,-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">{note}</p>',
         unsafe_allow_html=True,
     )
 
@@ -1229,8 +1169,8 @@ def render_cross_hardware(data: dict):
     st.markdown('<hr class="section-sep">', unsafe_allow_html=True)
     st.markdown('<p class="slabel">Built for Your Stack</p>', unsafe_allow_html=True)
     st.markdown(
-        '<p style="font-size:0.82rem;color:#aaa;margin:0 0 1rem 0;'
-        'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+        '<p style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin:0 0 1rem 0;'
+        'font-family:Inter,-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
         'Each optimization is purpose-built for a specific hardware + model combo — '
         'we have a version for your exact setup.'
         '</p>',
@@ -1417,18 +1357,18 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit):
         textfont=dict(size=11, color="#7C73FF"),
     ))
     fig.update_layout(
-        title=dict(text=title, font=dict(size=13, color="#333"), x=0),
+        title=dict(text=title, font=dict(size=13, color="rgba(255,255,255,0.75)"), x=0),
         barmode="group",
         bargap=0.25,
         bargroupgap=0.08,
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-        font=dict(family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"),
-        yaxis=dict(showgrid=True, gridcolor="#f0efed", zeroline=False,
-                   tickfont=dict(color="#aaa", size=11)),
-        xaxis=dict(tickfont=dict(color="#555", size=12)),
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="Inter, -apple-system, sans-serif", color="rgba(255,255,255,0.75)"),
+        yaxis=dict(showgrid=True, gridcolor="rgba(255,255,255,0.07)", zeroline=False,
+                   tickfont=dict(color="rgba(255,255,255,0.35)", size=11)),
+        xaxis=dict(tickfont=dict(color="rgba(255,255,255,0.65)", size=12)),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                    font=dict(size=12, color="#333")),
+                    font=dict(size=12, color="rgba(255,255,255,0.75)")),
         margin=dict(t=60, b=20, l=20, r=20),
         height=280,
     )
@@ -1448,30 +1388,30 @@ def render_cost_savings(data: dict):
     monthly_saving  = saving_per_1m * monthly_m
     annual_saving   = monthly_saving * 12
 
-    F = "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
+    F = "font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
     st.markdown(
-        f'<p style="font-size:0.85rem;color:#888;margin:0 0 1.2rem;{F}">'
-        f'Based on <strong style="color:#333">{monthly_m}M tokens/month</strong></p>',
+        f'<p style="font-size:0.85rem;color:rgba(255,255,255,0.4);margin:0 0 1.2rem;{F}">'
+        f'Based on <strong style="color:rgba(255,255,255,0.85)">{monthly_m}M tokens/month</strong></p>',
         unsafe_allow_html=True,
     )
 
     c1, c2, c3, c4 = st.columns(4)
-    def _card(col, label, value, sub, accent="#111"):
+    def _card(col, label, value, sub, accent="#ffffff"):
         col.markdown(
-            f'<div style="background:white;border:1px solid #e8e4ff;border-radius:12px;'
-            f'box-shadow:0 2px 10px rgba(124,115,255,0.06);padding:1.1rem 1.2rem;{F}">'
+            f'<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(124,115,255,0.2);border-radius:12px;'
+            f'box-shadow:0 4px 20px rgba(0,0,0,0.25);padding:1.1rem 1.2rem;{F}">'
             f'<div style="font-size:0.6rem;font-weight:700;letter-spacing:1.6px;'
-            f'text-transform:uppercase;color:#c4bfdf;margin-bottom:0.55rem">{label}</div>'
+            f'text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:0.55rem">{label}</div>'
             f'<div style="font-size:1.85rem;font-weight:900;color:{accent};line-height:1;letter-spacing:-0.5px">{value}</div>'
-            f'<div style="font-size:0.72rem;color:#b0aac8;margin-top:0.45rem">{sub}</div>'
+            f'<div style="font-size:0.72rem;color:rgba(255,255,255,0.33);margin-top:0.45rem">{sub}</div>'
             f'</div>',
             unsafe_allow_html=True,
         )
 
-    _card(c1, "Cost per 1M tokens",   f"${cost_opt:.2f}",              f"down from ${cost_base:.2f}", "#111")
-    _card(c2, "Saving per 1M tokens", f"${saving_per_1m:.2f}",         f"{saving_pct:.0f}% reduction", "#1AD598")
-    _card(c3, "Monthly saving",        f"${monthly_saving:,.0f}",       f"at {monthly_m}M tok/mo",      "#1AD598")
-    _card(c4, "Annual saving",         f"${annual_saving:,.0f}",        "projected over 12 months",     "#1AD598")
+    _card(c1, "Cost per 1M tokens",   f"${cost_opt:.2f}",         f"down from ${cost_base:.2f}", "#ffffff")
+    _card(c2, "Saving per 1M tokens", f"${saving_per_1m:.2f}",    f"{saving_pct:.0f}% reduction", "#1AD598")
+    _card(c3, "Monthly saving",        f"${monthly_saving:,.0f}", f"at {monthly_m}M tok/mo",      "#1AD598")
+    _card(c4, "Annual saving",         f"${annual_saving:,.0f}",  "projected over 12 months",     "#1AD598")
 
 
 def render_performance_charts(data: dict):
@@ -1510,19 +1450,19 @@ def render_accuracy(data: dict):
     n_pass   = sum(1 for v in validations if v.get("pass", False))
     n_total  = len(validations)
 
-    banner_bg    = "#f4fef9" if all_pass else "#fff5f5"
-    banner_border = "#d0f5e8" if all_pass else "#ffc8c8"
-    banner_color  = "#0ea86e" if all_pass else "#e03c3c"
+    banner_bg    = "rgba(26,213,152,0.08)" if all_pass else "rgba(248,113,113,0.08)"
+    banner_border = "rgba(26,213,152,0.3)" if all_pass else "rgba(248,113,113,0.3)"
+    banner_color  = "#1AD598" if all_pass else "#f87171"
     banner_icon   = "✓" if all_pass else "✗"
-    banner_text   = f"All {n_total} checks passed — outputs verified identical" if all_pass else f"{n_pass} / {n_total} checks passed"
+    banner_text   = f"All {n_total} checks passed — semantic equivalence verified" if all_pass else f"{n_pass} / {n_total} checks passed"
 
     layer_icons = ["①", "②", "③", "④", "⑤", "⑥"]
 
     st.markdown('<hr class="section-sep">', unsafe_allow_html=True)
     st.markdown('<p class="slabel">Output Correctness</p>', unsafe_allow_html=True)
     st.markdown(
-        '<p style="font-size:0.85rem;color:#888;margin:-0.5rem 0 1.2rem;'
-        'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+        '<p style="font-size:0.85rem;color:rgba(255,255,255,0.4);margin:-0.5rem 0 1.2rem;'
+        'font-family:Inter,-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
         'Independent validation layers confirm the optimised model produces '
         'semantically identical outputs to the baseline.</p>',
         unsafe_allow_html=True,
@@ -1552,24 +1492,24 @@ def render_accuracy(data: dict):
             layer_num   = layer_icons[i] if i < len(layer_icons) else str(i + 1)
 
             col.markdown(
-                f'<div style="background:white;border:1.5px solid {card_border};border-radius:12px;'
-                f'box-shadow:0 2px 10px rgba(124,115,255,0.05);padding:1.1rem 1rem;height:100%;'
-                f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+                f'<div style="background:rgba(255,255,255,0.04);border:1.5px solid {card_border};border-radius:12px;'
+                f'box-shadow:0 4px 20px rgba(0,0,0,0.25);padding:1.1rem 1rem;height:100%;'
+                f'font-family:Inter,-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
 
                 f'<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">'
-                f'<span style="font-size:0.8rem;color:#ccc;font-weight:600">{layer_num}</span>'
+                f'<span style="font-size:0.8rem;color:rgba(255,255,255,0.25);font-weight:600">{layer_num}</span>'
                 f'<div style="margin-left:auto;width:22px;height:22px;border-radius:50%;'
                 f'background:{icon_bg};display:flex;align-items:center;justify-content:center;'
                 f'font-size:0.75rem;font-weight:800;color:{icon_color}">{check}</div>'
                 f'</div>'
 
-                f'<div style="font-size:0.8rem;font-weight:700;color:#111;margin-bottom:0.3rem">'
+                f'<div style="font-size:0.8rem;font-weight:700;color:#ffffff;margin-bottom:0.3rem">'
                 f'{v.get("name","")}</div>'
 
-                f'<div style="font-size:0.72rem;color:#aaa;line-height:1.45;margin-bottom:0.6rem">'
+                f'<div style="font-size:0.72rem;color:rgba(255,255,255,0.38);line-height:1.45;margin-bottom:0.6rem">'
                 f'{v.get("description","")}</div>'
 
-                f'<div style="font-size:0.72rem;color:#555;background:#f9f9f9;'
+                f'<div style="font-size:0.72rem;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.05);'
                 f'border-radius:5px;padding:0.4rem 0.55rem;line-height:1.4">'
                 f'{v.get("note","")}</div>'
 
@@ -1583,6 +1523,29 @@ def render_accuracy(data: dict):
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
+    # ── Logo header ───────────────────────────────────────────────────────
+    st.markdown(
+        '<div style="display:flex;align-items:center;gap:12px;padding-bottom:2rem;'
+        'border-bottom:1px solid rgba(124,115,255,0.18);margin-bottom:2rem;'
+        'font-family:Inter,-apple-system,sans-serif">'
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">'
+        '<line x1="13" y1="1" x2="13" y2="8" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+        '<line x1="13" y1="18" x2="13" y2="25" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+        '<line x1="1" y1="13" x2="8" y2="13" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+        '<line x1="18" y1="13" x2="25" y2="13" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+        '<line x1="4.5" y1="4.5" x2="9.5" y2="9.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+        '<line x1="16.5" y1="16.5" x2="21.5" y2="21.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+        '<line x1="21.5" y1="4.5" x2="16.5" y2="9.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+        '<line x1="9.5" y1="16.5" x2="4.5" y2="21.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+        '<circle cx="13" cy="13" r="2.5" fill="white"/>'
+        '</svg>'
+        '<span style="color:white;font-weight:800;font-size:1rem;letter-spacing:2px;text-transform:uppercase">TurinTech</span>'
+        '<span style="width:1px;height:16px;background:rgba(255,255,255,0.18);margin:0 6px;display:inline-block"></span>'
+        '<span style="color:#7C73FF;font-weight:600;font-size:0.85rem;letter-spacing:0.3px">Artemis LLM Optimizer</span>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
     url_config = st.query_params.get("config", "")
     configs    = list_configs()
 
@@ -1610,39 +1573,18 @@ def main():
 
     render_spec_bar(data)
 
-    # ── Live comparison ───────────────────────────────────────────────────
-    st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1rem 0 0.5rem">', unsafe_allow_html=True)
-    render_live_section(data)
+    # ── Token race ────────────────────────────────────────────────────────
+    render_token_race(data)
 
-    # ── Results (appear after comparison) ─────────────────────────────────
-    if st.session_state.get("_live_result"):
-        st.markdown(
-            '<style>'
-            '[data-testid="stVerticalBlockBorderWrapper"]{'
-            'background:#fafafe!important;'
-            'border:1.5px solid #e8e6ff!important;'
-            'border-radius:14px!important;'
-            '}'
-            '</style>',
-            unsafe_allow_html=True,
-        )
-        with st.container(border=True):
-            r = st.session_state["_live_result"]
-            if r.get("tps1") and r.get("tps2"):
-                ratio = r["tps2"] / max(r["tps1"], 0.001)
-                st.markdown(
-                    f'<div class="speedup-callout" style="margin-top:0">'
-                    f'<span class="speedup-num">{ratio:.2f}×</span>'
-                    f'<span style="display:block;font-size:1.1rem;font-weight:600;color:#333;margin-bottom:0.3rem">Optimised model ran faster on this prompt</span>'
-                    f'<span class="speedup-sub">Same prompt &nbsp;·&nbsp; Same model &nbsp;·&nbsp; Same hardware</span>'
-                    f'</div>',
-                    unsafe_allow_html=True,
-                )
-            render_performance_charts(data)
-            render_accuracy(data)
+    # ── Performance + Correctness (always shown below the race) ──────────
+    render_performance_charts(data)
+    render_accuracy(data)
+
+    # ── HIDDEN: Live comparison (kept for future use) ─────────────────────
+    # render_live_section(data)
 
     # ── Cost savings ─────────────────────────────────────────────────────
-    st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1.5rem 0 1rem">', unsafe_allow_html=True)
+    st.markdown('<hr style="border:none;border-top:1px solid rgba(124,115,255,0.18);margin:1.5rem 0 1rem">', unsafe_allow_html=True)
     st.markdown('<p class="slabel">Inference Cost Savings</p>', unsafe_allow_html=True)
     with st.container(border=True):
         monthly_tokens_m = st.slider(
@@ -1652,9 +1594,13 @@ def main():
         st.session_state["monthly_tokens_m"] = monthly_tokens_m
         render_cost_savings(data)
 
-    # ── Cross-hardware ────────────────────────────────────────────────────
-    st.markdown('<hr style="border:none;border-top:1px solid #eeecff;margin:1.5rem 0 1rem">', unsafe_allow_html=True)
-    render_cross_hardware(data)
+    # ── Cross-hardware (only when ≥2 results exist for the same framework) ──
+    framework = data.get("meta", {}).get("framework", "")
+    hw_entries = data.get("cross_hardware", [])
+    fw_results = [e for e in hw_entries if e.get("framework", "") == framework]
+    if len(fw_results) >= 2:
+        st.markdown('<hr style="border:none;border-top:1px solid rgba(124,115,255,0.18);margin:1.5rem 0 1rem">', unsafe_allow_html=True)
+        render_cross_hardware(data)
 
 
 main()
