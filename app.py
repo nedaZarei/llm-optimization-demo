@@ -1574,11 +1574,31 @@ def main():
     render_spec_bar(data)
 
     # ── Token race ────────────────────────────────────────────────────────
+    # Reset results visibility when config or prompt changes
+    race_key = f"race_{selected_id}_{st.session_state.get('live_prompt_sel', 0)}"
+    if st.session_state.get("_race_key") != race_key:
+        st.session_state["_race_key"] = race_key
+        st.session_state["show_race_results"] = False
+
     render_token_race(data)
 
-    # ── Performance + Correctness (always shown below the race) ──────────
-    render_performance_charts(data)
-    render_accuracy(data)
+    # ── "View Results" button — appears after the race plays ─────────────
+    if not st.session_state.get("show_race_results"):
+        st.markdown(
+            '<p style="text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.25);'
+            'margin:0.2rem 0 0.6rem;font-family:Inter,sans-serif">'
+            'Play the race above, then reveal the full benchmark below.</p>',
+            unsafe_allow_html=True,
+        )
+        _, col_b, _ = st.columns([2, 1, 2])
+        with col_b:
+            if st.button("View Results →", key="show_results_btn", use_container_width=True):
+                st.session_state["show_race_results"] = True
+                st.rerun()
+
+    if st.session_state.get("show_race_results"):
+        render_performance_charts(data)
+        render_accuracy(data)
 
     # ── HIDDEN: Live comparison (kept for future use) ─────────────────────
     # render_live_section(data)
