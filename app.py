@@ -946,6 +946,7 @@ function reset(){
     document.getElementById('tm-'+s).style.display='none';
   });
   document.getElementById('metrics').style.display='none';document.getElementById('callout').style.display='none';
+  try{var u=new URL(window.parent.location.href);u.searchParams.delete('_rd');window.parent.history.replaceState({},'',u.toString());}catch(e){}
   bdone=false;adone=false;blit=false;alit=false;
 }
 function fin(s,sec){
@@ -969,7 +970,7 @@ function tick(ts){
   if(!alit&&e>=AT/1000){alit=true;document.getElementById('tf-a').innerHTML='<span style="color:#1AD598;font-weight:700">\u26a1 First token \u2014 '+AT+' ms</span>';}
   if(atok>=TOT&&!adone){adone=true;fin('a',AT/1000+TOT/AS);}
   if(!bdone||!adone){raf=requestAnimationFrame(tick);}
-  else{document.getElementById('metrics').style.display='grid';document.getElementById('callout').style.display='block';document.getElementById('pb').disabled=false;document.getElementById('pb').textContent='\u21ba Play again';}
+  else{document.getElementById('metrics').style.display='grid';document.getElementById('callout').style.display='block';document.getElementById('pb').disabled=false;document.getElementById('pb').textContent='\u21ba Play again';try{var u=new URL(window.parent.location.href);u.searchParams.set('_rd','1');window.parent.history.replaceState({},'',u.toString());}catch(e){}}
 }
 </script></body></html>"""
 
@@ -1529,11 +1530,12 @@ def render_accuracy(data: dict):
 
 @st.fragment(run_every=1)
 def _race_results_fragment():
-    _d = st.session_state.get("_race_data")
-    if not _d or _time.time() < st.session_state.get("_race_end", float("inf")):
+    if st.query_params.get("_rd") != "1":
         return
-    render_performance_charts(_d)
-    render_accuracy(_d)
+    _d = st.session_state.get("_race_data")
+    if _d:
+        render_performance_charts(_d)
+        render_accuracy(_d)
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -1590,25 +1592,13 @@ def main():
     render_spec_bar(data)
 
     # ── Token race ────────────────────────────────────────────────────────
-    # Compute race duration so the fragment knows when to reveal results
+    # Clear race-done flag when config or prompt changes
     race_key = f"{selected_id}_{st.session_state.get('live_prompt_sel', 0)}"
     if st.session_state.get("_race_key") != race_key:
         st.session_state["_race_key"] = race_key
-        demo_prompts = data.get("demo_prompts", [])
-        pidx = st.session_state.get("live_prompt_sel", 0)
-        if demo_prompts and pidx < len(demo_prompts):
-            rec  = demo_prompts[pidx].get("recorded", {})
-            b    = rec.get("baseline", {})
-            o    = rec.get("optimized", {})
-            ntok = max(len(b.get("text", "").split()), 1)
-            race_dur = max(
-                float(b.get("ttft_ms", 1000)) / 1000 + ntok / max(float(b.get("tps", 40)), 1),
-                float(o.get("ttft_ms",  800)) / 1000 + ntok / max(float(o.get("tps", 60)), 1),
-            ) + 1.0
-        else:
-            race_dur = 3.0
-        st.session_state["_race_end"]  = _time.time() + race_dur
-        st.session_state["_race_data"] = data
+        if "_rd" in st.query_params:
+            del st.query_params["_rd"]
+    st.session_state["_race_data"] = data
 
     render_token_race(data)
     _race_results_fragment()
