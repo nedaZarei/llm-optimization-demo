@@ -995,12 +995,6 @@ def render_token_race(data: dict):
 
     st.markdown('<hr style="border:none;border-top:1px solid rgba(124,115,255,0.18);margin:1rem 0 0.5rem">', unsafe_allow_html=True)
     st.markdown('<p class="slabel">Token Race</p>', unsafe_allow_html=True)
-    st.markdown(
-        '<p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin:-0.3rem 0 0.8rem;'
-        'font-family:Inter,sans-serif">Play the race to reveal the full benchmark results.</p>',
-        unsafe_allow_html=True,
-    )
-
     prompt_idx = st.selectbox(
         "Curated prompt",
         range(len(demo_prompts)),
@@ -1526,12 +1520,7 @@ def render_accuracy(data: dict):
     # ── Model accuracy (MMLU / HellaSwag) ─────────────────────────────────────
 
 
-# ── Deferred results fragment ─────────────────────────────────────────────────
-
-@st.fragment(run_every=1)
 def _race_results_fragment():
-    if st.query_params.get("_rd") != "1":
-        return
     _d = st.session_state.get("_race_data")
     if _d:
         render_performance_charts(_d)
@@ -1591,13 +1580,6 @@ def main():
 
     render_spec_bar(data)
 
-    # ── Token race ────────────────────────────────────────────────────────
-    # Clear race-done flag when config or prompt changes
-    race_key = f"{selected_id}_{st.session_state.get('live_prompt_sel', 0)}"
-    if st.session_state.get("_race_key") != race_key:
-        st.session_state["_race_key"] = race_key
-        if "_rd" in st.query_params:
-            del st.query_params["_rd"]
     st.session_state["_race_data"] = data
 
     render_token_race(data)
