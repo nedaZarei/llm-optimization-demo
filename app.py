@@ -876,7 +876,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 .playbtn{background:#7C73FF;color:white;border:none;border-radius:50px;padding:0.44rem 1.5rem;font-size:0.84rem;font-weight:600;cursor:pointer;transition:opacity .15s}
 .playbtn:hover:not(:disabled){opacity:0.85}
 .playbtn:disabled{background:rgba(124,115,255,0.3);color:rgba(255,255,255,0.35);cursor:default}
-.dummy-keep{color:#bbb}/* placeholder to preserve old class references */
+.dummy-keep{color:#bbb}
 .speed-wrap{display:flex;align-items:center;gap:4px}
 </style></head><body>
 <div class="race-grid">
@@ -994,6 +994,11 @@ def render_token_race(data: dict):
 
     st.markdown('<hr style="border:none;border-top:1px solid rgba(124,115,255,0.18);margin:1rem 0 0.5rem">', unsafe_allow_html=True)
     st.markdown('<p class="slabel">Token Race</p>', unsafe_allow_html=True)
+    st.markdown(
+        '<p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin:-0.3rem 0 0.8rem;'
+        'font-family:Inter,sans-serif">Play the race to reveal the full benchmark results.</p>',
+        unsafe_allow_html=True,
+    )
 
     prompt_idx = st.selectbox(
         "Curated prompt",
@@ -1520,6 +1525,17 @@ def render_accuracy(data: dict):
     # ── Model accuracy (MMLU / HellaSwag) ─────────────────────────────────────
 
 
+# ── Deferred results fragment ─────────────────────────────────────────────────
+
+@st.fragment(run_every=1)
+def _race_results_fragment():
+    _d = st.session_state.get("_race_data")
+    if not _d or _time.time() < st.session_state.get("_race_end", float("inf")):
+        return
+    render_performance_charts(_d)
+    render_accuracy(_d)
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -1574,31 +1590,28 @@ def main():
     render_spec_bar(data)
 
     # ── Token race ────────────────────────────────────────────────────────
-    # Reset results visibility when config or prompt changes
-    race_key = f"race_{selected_id}_{st.session_state.get('live_prompt_sel', 0)}"
+    # Compute race duration so the fragment knows when to reveal results
+    race_key = f"{selected_id}_{st.session_state.get('live_prompt_sel', 0)}"
     if st.session_state.get("_race_key") != race_key:
         st.session_state["_race_key"] = race_key
-        st.session_state["show_race_results"] = False
+        demo_prompts = data.get("demo_prompts", [])
+        pidx = st.session_state.get("live_prompt_sel", 0)
+        if demo_prompts and pidx < len(demo_prompts):
+            rec  = demo_prompts[pidx].get("recorded", {})
+            b    = rec.get("baseline", {})
+            o    = rec.get("optimized", {})
+            ntok = max(len(b.get("text", "").split()), 1)
+            race_dur = max(
+                float(b.get("ttft_ms", 1000)) / 1000 + ntok / max(float(b.get("tps", 40)), 1),
+                float(o.get("ttft_ms",  800)) / 1000 + ntok / max(float(o.get("tps", 60)), 1),
+            ) + 1.0
+        else:
+            race_dur = 3.0
+        st.session_state["_race_end"]  = _time.time() + race_dur
+        st.session_state["_race_data"] = data
 
     render_token_race(data)
-
-    # ── "View Results" button — appears after the race plays ─────────────
-    if not st.session_state.get("show_race_results"):
-        st.markdown(
-            '<p style="text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.25);'
-            'margin:0.2rem 0 0.6rem;font-family:Inter,sans-serif">'
-            'Play the race above, then reveal the full benchmark below.</p>',
-            unsafe_allow_html=True,
-        )
-        _, col_b, _ = st.columns([2, 1, 2])
-        with col_b:
-            if st.button("View Results →", key="show_results_btn", use_container_width=True):
-                st.session_state["show_race_results"] = True
-                st.rerun()
-
-    if st.session_state.get("show_race_results"):
-        render_performance_charts(data)
-        render_accuracy(data)
+    _race_results_fragment()
 
     # ── HIDDEN: Live comparison (kept for future use) ─────────────────────
     # render_live_section(data)
