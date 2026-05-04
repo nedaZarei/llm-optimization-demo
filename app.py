@@ -1,10 +1,18 @@
 import streamlit as st
 import json
+import base64
 import threading
 import queue as _queue
 import time as _time
 from pathlib import Path
 import plotly.graph_objects as go
+
+def _b64(path: str) -> str:
+    return base64.b64encode(Path(path).read_bytes()).decode()
+
+_ROOT = Path(__file__).parent
+_TURINTECH_B64 = _b64(_ROOT / "logos/TurinTech-light-no Background.svg")
+_ARTEMIS_WM    = _b64(_ROOT / "logos/artemis-logo-wordmark.png")
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -1532,24 +1540,11 @@ def _race_results_fragment():
 def main():
     # ── Logo header ───────────────────────────────────────────────────────
     st.markdown(
-        '<div style="display:flex;align-items:center;gap:12px;padding-bottom:2rem;'
-        'border-bottom:1px solid rgba(124,115,255,0.18);margin-bottom:2rem;'
-        'font-family:Inter,-apple-system,sans-serif">'
-        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">'
-        '<line x1="13" y1="1" x2="13" y2="8" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
-        '<line x1="13" y1="18" x2="13" y2="25" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
-        '<line x1="1" y1="13" x2="8" y2="13" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
-        '<line x1="18" y1="13" x2="25" y2="13" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
-        '<line x1="4.5" y1="4.5" x2="9.5" y2="9.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
-        '<line x1="16.5" y1="16.5" x2="21.5" y2="21.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
-        '<line x1="21.5" y1="4.5" x2="16.5" y2="9.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
-        '<line x1="9.5" y1="16.5" x2="4.5" y2="21.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
-        '<circle cx="13" cy="13" r="2.5" fill="white"/>'
-        '</svg>'
-        '<span style="color:white;font-weight:800;font-size:1rem;letter-spacing:2px;text-transform:uppercase">TurinTech</span>'
-        '<span style="width:1px;height:16px;background:rgba(255,255,255,0.18);margin:0 6px;display:inline-block"></span>'
-        '<span style="color:#7C73FF;font-weight:600;font-size:0.85rem;letter-spacing:0.3px">Artemis LLM Optimizer</span>'
-        '</div>',
+        f'<div style="display:flex;align-items:center;justify-content:space-between;'
+        f'padding-bottom:2rem;border-bottom:1px solid rgba(124,115,255,0.18);margin-bottom:2rem">'
+        f'<img src="data:image/svg+xml;base64,{_TURINTECH_B64}" style="height:32px;object-fit:contain">'
+        f'<img src="data:image/png;base64,{_ARTEMIS_WM}" style="height:32px;object-fit:contain">'
+        f'</div>',
         unsafe_allow_html=True,
     )
 
