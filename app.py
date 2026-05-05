@@ -25,16 +25,83 @@ st.set_page_config(
 # ── CSS ───────────────────────────────────────────────────────────────────────
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* ── Artemis Design System — fonts ───────────────────────────────────────── */
+@font-face {
+  font-family: 'Archivo';
+  src: url('/app/static/fonts/Archivo-VariableFont.ttf') format('truetype-variations');
+  font-weight: 100 900; font-stretch: 62.5% 125%; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Archivo';
+  src: url('/app/static/fonts/Archivo-Italic-VariableFont.ttf') format('truetype-variations');
+  font-weight: 100 900; font-stretch: 62.5% 125%; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Hack';
+  src: url('/app/static/fonts/Hack-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Hack';
+  src: url('/app/static/fonts/Hack-Bold.ttf') format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Hack';
+  src: url('/app/static/fonts/Hack-Italic.ttf') format('truetype');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Hack';
+  src: url('/app/static/fonts/Hack-BoldItalic.ttf') format('truetype');
+  font-weight: 700; font-style: italic; font-display: swap;
+}
+
+/* ── Artemis Design System — tokens ─────────────────────────────────────── */
+:root {
+  --font-sans: 'Archivo', system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-mono: 'Hack', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-brand1-400: #7b66ff;
+  --color-brand1-500: #6350dc;
+  --color-brand1-950: #160f42;
+  --color-brand2-400: #eef562;
+  --color-brand2-500: #eef35f;
+  --color-brand2-950: #252607;
+
+  --color-slate-50:  #f8fafc;
+  --color-slate-400: #94a3b8;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
+
+  --color-background: var(--color-slate-950);
+  --color-card:       var(--color-slate-900);
+  --color-border:     #ffffff1a;
+  --color-muted-foreground: var(--color-slate-400);
+  --color-primary:    var(--color-brand1-400);
+  --color-secondary:  var(--color-brand2-500);
+
+  --color-success:    #4ade80;
+  --color-warning:    #fbbf24;
+  --color-destructive:#f87171;
+
+  --brand-gradient: linear-gradient(135deg, var(--color-brand1-500) 0%, var(--color-brand2-400) 100%);
+
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+}
 
 /* ─ Base dark theme ─ */
 [data-testid="stAppViewContainer"] {
-    background: #07071a;
+    background: var(--color-background);
     background-image:
-        linear-gradient(rgba(124,115,255,0.055) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,115,255,0.055) 1px, transparent 1px),
+        linear-gradient(rgba(123,102,255,0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(123,102,255,0.055) 1px, transparent 1px),
         radial-gradient(ellipse 80% 55% at 15% 0%, rgba(91,82,232,0.22) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 40% at 90% 100%, rgba(26,213,152,0.1) 0%, transparent 50%);
+        radial-gradient(ellipse 50% 40% at 90% 100%, rgba(238,243,95,0.06) 0%, transparent 50%);
     background-size: 60px 60px, 60px 60px, 100% 100%, 100% 100%;
     min-height: 100vh;
 }
@@ -45,7 +112,7 @@ CSS = """
     padding: 2.5rem 3.5rem 6rem !important;
     max-width: 1100px !important;
     margin: 0 auto;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: var(--font-sans);
 }
 
 /* ─ Hide default chrome ─ */
@@ -62,31 +129,31 @@ footer { display: none; }
     font-weight: 800;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: #7C73FF;
+    color: var(--color-primary);
     margin: 0 0 0.9rem 0;
     padding-left: 0.65rem;
-    border-left: 3px solid #7C73FF;
+    border-left: 3px solid var(--color-primary);
     line-height: 1.5;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
 }
 
 /* ─ Spec bar ─ */
 .spec-bar {
     background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(124,115,255,0.22);
-    border-radius: 14px;
+    border: 1px solid rgba(123,102,255,0.22);
+    border-radius: var(--radius-xl);
     padding: 1.1rem 1.6rem;
     display: flex;
     align-items: stretch;
     gap: 0;
     margin-top: 0.85rem;
     box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
 }
 .spec-bar-item {
     flex: 1;
     padding: 0 1.4rem;
-    border-right: 1px solid rgba(124,115,255,0.12);
+    border-right: 1px solid rgba(123,102,255,0.12);
 }
 .spec-bar-item:first-child { padding-left: 0; }
 .spec-bar-item:last-child { border-right: none; }
@@ -117,9 +184,9 @@ footer { display: none; }
 /* ─ Spec tier badges ─ */
 .badge-high {
     display: inline-block;
-    background: rgba(124,115,255,0.18);
+    background: rgba(123,102,255,0.18);
     color: #b0aaff;
-    border: 1px solid rgba(124,115,255,0.35);
+    border: 1px solid rgba(123,102,255,0.35);
     border-radius: 5px;
     padding: 0.1rem 0.45rem;
     font-size: 0.62rem; font-weight: 800;
@@ -149,29 +216,29 @@ footer { display: none; }
 /* ─ Section divider ─ */
 .section-sep {
     border: none; height: 1px;
-    background: linear-gradient(90deg, rgba(124,115,255,0.4) 0%, rgba(26,213,152,0.2) 60%, transparent 100%);
+    background: linear-gradient(90deg, rgba(123,102,255,0.4) 0%, rgba(74,222,128,0.2) 60%, transparent 100%);
     margin: 2.25rem 0 1.75rem;
 }
 
 /* ─ Benchmark table ─ */
 .bm-wrap {
-    border: 1px solid rgba(124,115,255,0.2);
+    border: 1px solid rgba(123,102,255,0.2);
     border-radius: 12px; overflow: hidden;
     background: rgba(255,255,255,0.03);
     box-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
 .bm-table {
     width: 100%; border-collapse: collapse;
-    font-size: 0.875rem; font-family: 'Inter', sans-serif;
+    font-size: 0.875rem; font-family: var(--font-sans);
 }
-.bm-table thead tr { border-bottom: 1.5px solid rgba(124,115,255,0.15); }
+.bm-table thead tr { border-bottom: 1.5px solid rgba(123,102,255,0.15); }
 .bm-table thead th {
     padding: 0.7rem 1.1rem; text-align: left;
     font-size: 0.62rem; font-weight: 700;
     letter-spacing: 1px; text-transform: uppercase;
     color: rgba(255,255,255,0.28); background: transparent;
 }
-.bm-table thead th.col-artemis { color: #7C73FF; }
+.bm-table thead th.col-artemis { color: var(--color-primary); }
 .bm-table tbody td {
     padding: 0.65rem 1.1rem;
     border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -184,14 +251,14 @@ footer { display: none; }
     white-space: nowrap; padding-left: 0.9rem;
 }
 .bm-table .metric-cell { color: rgba(255,255,255,0.5); }
-.bm-table tr.g-sep td { border-top: 1.5px solid rgba(124,115,255,0.15) !important; }
+.bm-table tr.g-sep td { border-top: 1.5px solid rgba(123,102,255,0.15) !important; }
 
 /* ─ Tooltip ─ */
-.tt { cursor: help; border-bottom: 1px dashed rgba(124,115,255,0.45); position: relative; display: inline-block; }
+.tt { cursor: help; border-bottom: 1px dashed rgba(123,102,255,0.45); position: relative; display: inline-block; }
 .tt::after {
     content: attr(data-tip); position: absolute; left: 0; top: calc(100% + 7px);
-    background: #12123a; color: rgba(255,255,255,0.88);
-    border: 1px solid rgba(124,115,255,0.3);
+    background: var(--color-card); color: rgba(255,255,255,0.88);
+    border: 1px solid rgba(123,102,255,0.3);
     border-radius: 8px; padding: 0.5rem 0.85rem;
     font-size: 0.75rem; font-weight: 400; line-height: 1.5;
     width: 230px; white-space: normal; z-index: 9999;
@@ -201,19 +268,19 @@ footer { display: none; }
 .tt:hover::after { opacity: 1; }
 
 /* ─ Delta values ─ */
-.d-pos  { color: #1AD598; font-weight: 700; }
+.d-pos  { color: var(--color-success); font-weight: 700; }
 .d-neg  { color: #f87171; font-weight: 700; }
 .d-neut { color: rgba(255,255,255,0.35); font-weight: 600; }
 
 /* ─ Built for your stack table ─ */
 .hw-wrap {
-    border: 1px solid rgba(124,115,255,0.2);
+    border: 1px solid rgba(123,102,255,0.2);
     border-radius: 12px; overflow: hidden;
     background: rgba(255,255,255,0.03);
     box-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
-.hw-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; font-family: 'Inter', sans-serif; }
-.hw-table thead tr { border-bottom: 1.5px solid rgba(124,115,255,0.15); }
+.hw-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; font-family: var(--font-sans); }
+.hw-table thead tr { border-bottom: 1.5px solid rgba(123,102,255,0.15); }
 .hw-table thead th {
     padding: 0.7rem 1.1rem; text-align: left;
     font-size: 0.62rem; font-weight: 700; letter-spacing: 1px;
@@ -221,52 +288,52 @@ footer { display: none; }
 }
 .hw-table tbody td { padding: 0.75rem 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
 .hw-table tbody tr:last-child td { border-bottom: none; }
-.hw-table tbody tr:hover td { background: rgba(124,115,255,0.07); }
+.hw-table tbody tr:hover td { background: rgba(123,102,255,0.07); }
 .hw-name { font-weight: 700; color: #ffffff; }
 .hw-class { color: rgba(255,255,255,0.38); font-size: 0.82rem; }
 
 /* ─ Progress bar ─ */
 .pbar-row { display: flex; align-items: center; gap: 0.6rem; }
 .pbar-bg  { background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; width: 80px; flex-shrink: 0; }
-.pbar-fg  { background: linear-gradient(90deg, #7C73FF, #1AD598); border-radius: 4px; height: 6px; }
+.pbar-fg  { background: linear-gradient(90deg, var(--color-primary), var(--color-success)); border-radius: 4px; height: 6px; }
 
 /* ─ Verdict ─ */
-.verd-pass { color: #1AD598; font-weight: 700; font-size: 0.82rem; }
+.verd-pass { color: var(--color-success); font-weight: 700; font-size: 0.82rem; }
 .verd-warn { color: #fbbf24; font-weight: 600; font-size: 0.82rem; }
 .verd-fail { color: #f87171; font-weight: 600; font-size: 0.82rem; }
 
 /* ─ View link ─ */
-a.view-link { color: #7C73FF; font-weight: 600; text-decoration: none; font-size: 0.83rem; }
+a.view-link { color: var(--color-primary); font-weight: 600; text-decoration: none; font-size: 0.83rem; }
 a.view-link:hover { text-decoration: underline; }
 
 /* ─ Share box ─ */
 .share-url {
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(124,115,255,0.2);
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(123,102,255,0.2);
     border-radius: 8px; padding: 0.7rem 1rem;
-    font-family: "Menlo", "Monaco", monospace; font-size: 0.8rem;
+    font-family: var(--font-mono); font-size: 0.8rem;
     color: rgba(255,255,255,0.6); word-break: break-all; margin: 0.35rem 0 0.4rem 0;
 }
 
 /* ─ Tabs ─ */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 0; border-bottom: 1.5px solid rgba(124,115,255,0.2) !important; background: transparent !important;
+    gap: 0; border-bottom: 1.5px solid rgba(123,102,255,0.2) !important; background: transparent !important;
 }
 .stTabs [data-baseweb="tab"] {
     border-radius: 0; font-size: 0.82rem; font-weight: 600;
     color: rgba(255,255,255,0.33) !important; padding: 0.55rem 1.1rem;
     border-bottom: 2px solid transparent; background: transparent !important;
 }
-.stTabs [aria-selected="true"] { color: #7C73FF !important; border-bottom: 2px solid #7C73FF !important; }
+.stTabs [aria-selected="true"] { color: var(--color-primary) !important; border-bottom: 2px solid var(--color-primary) !important; }
 .stTabs [data-baseweb="tab-panel"] { padding: 1rem 0 0 0; }
 
 /* ─ Buttons ─ */
 .stDownloadButton > button {
-    background: rgba(124,115,255,0.15) !important; color: #b0aaff !important;
-    border: 1px solid rgba(124,115,255,0.3) !important; border-radius: 50px !important;
+    background: rgba(123,102,255,0.15) !important; color: #b0aaff !important;
+    border: 1px solid rgba(123,102,255,0.3) !important; border-radius: 50px !important;
     font-weight: 600 !important; font-size: 0.875rem !important;
     padding: 0.55rem 1.2rem !important; width: 100% !important; cursor: pointer !important;
 }
-.stDownloadButton > button:hover { background: rgba(124,115,255,0.25) !important; }
+.stDownloadButton > button:hover { background: rgba(123,102,255,0.25) !important; }
 
 [data-testid="stSelectbox"] label {
     font-size: 0.78rem !important; font-weight: 600 !important;
@@ -276,7 +343,7 @@ a.view-link:hover { text-decoration: underline; }
     font-size: 0.78rem !important; font-weight: 600 !important; color: rgba(255,255,255,0.4) !important;
 }
 [data-testid="stButton"] > button {
-    background: #7C73FF !important; color: white !important; border: none !important;
+    background: var(--color-primary) !important; color: white !important; border: none !important;
     border-radius: 50px !important; font-weight: 700 !important; font-size: 0.9rem !important;
     padding: 0.6rem 1.6rem !important; cursor: pointer !important; transition: opacity 0.15s !important;
 }
@@ -285,40 +352,40 @@ a.view-link:hover { text-decoration: underline; }
 /* ─ Selectbox dark ─ */
 [data-testid="stSelectbox"] div[data-baseweb="select"] > div {
     background: rgba(255,255,255,0.06) !important;
-    border: 1px solid rgba(124,115,255,0.25) !important; color: white !important;
+    border: 1px solid rgba(123,102,255,0.25) !important; color: white !important;
 }
 [data-testid="stSelectbox"] span { color: rgba(255,255,255,0.85) !important; }
 [data-baseweb="popover"] > div, [data-baseweb="menu"] {
-    background: #12123a !important; border: 1px solid rgba(124,115,255,0.3) !important;
+    background: var(--color-card) !important; border: 1px solid rgba(123,102,255,0.3) !important;
 }
 [role="option"] { color: rgba(255,255,255,0.82) !important; background: transparent !important; }
-[role="option"]:hover { background: rgba(124,115,255,0.15) !important; }
+[role="option"]:hover { background: rgba(123,102,255,0.15) !important; }
 
 /* ─ Live side-by-side ─ */
 .why-box {
-    background: rgba(124,115,255,0.08); border: 1px solid rgba(124,115,255,0.2);
+    background: rgba(123,102,255,0.08); border: 1px solid rgba(123,102,255,0.2);
     border-radius: 8px; padding: 0.5rem 0.9rem; font-size: 0.81rem;
     color: rgba(255,255,255,0.55); margin: 0.5rem 0 0.8rem 0; line-height: 1.5;
 }
 .live-col-hdr {
     display: flex; justify-content: space-between; align-items: center;
-    padding-bottom: 0.6rem; border-bottom: 1px solid rgba(124,115,255,0.14);
+    padding-bottom: 0.6rem; border-bottom: 1px solid rgba(123,102,255,0.14);
     margin-bottom: 0.9rem;
 }
 .live-col-title { font-weight: 700; color: #ffffff; font-size: 0.9rem; }
 .live-lbl-base  { font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.28); }
-.live-lbl-opt   { font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #7C73FF; }
+.live-lbl-opt   { font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--color-primary); }
 .live-meta {
     font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 0.6rem;
     padding: 0.45rem 0.8rem; background: rgba(255,255,255,0.04);
-    border-radius: 7px; border: 1px solid rgba(124,115,255,0.14);
+    border-radius: 7px; border: 1px solid rgba(123,102,255,0.14);
     line-height: 1.5; letter-spacing: 0.1px;
 }
 .live-meta strong { color: #ffffff; font-weight: 700; }
 
 [data-testid="stChatMessage"] { margin-top: 0 !important; padding-top: 0.3rem !important; }
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-    background-color: rgba(124,115,255,0.08) !important; border-radius: 10px !important;
+    background-color: rgba(123,102,255,0.08) !important; border-radius: 10px !important;
 }
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p,
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] li,
@@ -332,11 +399,11 @@ a.view-link:hover { text-decoration: underline; }
     text-align: center; font-size: 1.05rem; font-weight: 500;
     color: rgba(255,255,255,0.55); margin: 1.2rem 0 0.4rem 0;
     padding: 2rem 2rem 1.6rem;
-    background: rgba(255,255,255,0.03); border: 1px solid rgba(124,115,255,0.25);
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(123,102,255,0.25);
     border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.25);
 }
 .speedup-num {
-    background: linear-gradient(135deg, #7C73FF 0%, #1AD598 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-success) 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     font-size: 5.5rem; font-weight: 900; line-height: 1; display: block;
     margin: 0.2rem 0 0.5rem; letter-spacing: -3px;
@@ -349,7 +416,7 @@ a.view-link:hover { text-decoration: underline; }
 /* ─ Results reveal box ─ */
 [data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(255,255,255,0.03) !important;
-    border: 1.5px solid rgba(124,115,255,0.22) !important;
+    border: 1.5px solid rgba(123,102,255,0.22) !important;
     border-radius: 16px !important; box-shadow: 0 4px 24px rgba(0,0,0,0.25) !important;
 }
 
@@ -458,8 +525,8 @@ def _fmt_val(v, unit):
 
 
 # Accent colors cycling per group (scenario blocks then accuracy/cost)
-_GROUP_ACCENTS = ["#7C73FF", "#1AD598", "#7C73FF", "#1AD598"]
-_GROUP_BG      = ["rgba(124,115,255,0.07)", "rgba(26,213,152,0.05)", "rgba(124,115,255,0.07)", "rgba(26,213,152,0.05)"]
+_GROUP_ACCENTS = ["var(--color-primary)", "var(--color-success)", "var(--color-primary)", "var(--color-success)"]
+_GROUP_BG      = ["rgba(123,102,255,0.07)", "rgba(74,222,128,0.05)", "rgba(123,102,255,0.07)", "rgba(74,222,128,0.05)"]
 _ACCENT_TAIL   = "rgba(255,255,255,0.25)"
 _BG_TAIL       = "rgba(255,255,255,0.02)"
 
@@ -838,20 +905,21 @@ def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict, speedup_in_box:
 
 _RACE_HTML = """<!DOCTYPE html>
 <html><head><meta charset="utf-8"><style>
+:root{--color-primary:#7b66ff;--color-success:#4ade80}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:transparent;padding:0 1px 4px}
 .race-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.rcard{background:rgba(255,255,255,0.05);border:1px solid rgba(124,115,255,0.22);border-radius:12px;padding:1rem 1.1rem;display:flex;flex-direction:column;min-height:148px}
-.rcard-opt{border-color:rgba(26,213,152,0.28);background:rgba(26,213,152,0.04)}
-.rcard-hdr{display:flex;align-items:center;justify-content:space-between;padding-bottom:0.5rem;border-bottom:1px solid rgba(124,115,255,0.14);margin-bottom:0.6rem}
-.rcard-hdr-opt{border-bottom-color:rgba(26,213,152,0.18)}
+.rcard{background:rgba(255,255,255,0.05);border:1px solid rgba(123,102,255,0.22);border-radius:12px;padding:1rem 1.1rem;display:flex;flex-direction:column;min-height:148px}
+.rcard-opt{border-color:rgba(74,222,128,0.28);background:rgba(74,222,128,0.04)}
+.rcard-hdr{display:flex;align-items:center;justify-content:space-between;padding-bottom:0.5rem;border-bottom:1px solid rgba(123,102,255,0.14);margin-bottom:0.6rem}
+.rcard-hdr-opt{border-bottom-color:rgba(74,222,128,0.18)}
 .rtitle{font-size:0.87rem;font-weight:700;color:rgba(255,255,255,0.88)}
-.rtitle-opt{color:#7C73FF}
+.rtitle-opt{color:var(--color-primary)}
 .hdr-r{display:flex;align-items:center;gap:6px}
 .badge{border-radius:20px;padding:0.12rem 0.6rem;font-size:0.68rem;font-weight:700}
-.br{background:rgba(124,115,255,0.18);color:#a09aff}
-.bd-b{background:rgba(124,115,255,0.18);color:#b0aaff;display:none}
-.bd-a{background:rgba(26,213,152,0.18);color:#1AD598;display:none}
+.br{background:rgba(123,102,255,0.18);color:#a09aff}
+.bd-b{background:rgba(123,102,255,0.18);color:#b0aaff;display:none}
+.bd-a{background:rgba(74,222,128,0.18);color:var(--color-success);display:none}
 .rtime{font-size:0.82rem;font-weight:700;color:rgba(255,255,255,0.45);display:none}
 .ttft-hit{font-size:0.69rem;font-weight:600;min-height:0.95rem;margin-bottom:5px}
 .cnt-row{display:flex;align-items:baseline;gap:5px;margin:2px 0 5px}
@@ -859,31 +927,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 .cunit{font-size:0.68rem;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:0.4px}
 .bar-bg{background:rgba(255,255,255,0.08);border-radius:3px;height:4px;overflow:hidden}
 .bar{height:4px;border-radius:3px;width:0%}
-.bar-b{background:#7C73FF}.bar-a{background:#1AD598}
+.bar-b{background:var(--color-primary)}.bar-a{background:var(--color-success)}
 .txt-ph{display:none;font-size:0.78rem;color:rgba(255,255,255,0.75);line-height:1.5;max-height:90px;overflow-y:auto;margin-bottom:4px;flex:1}
 .txt-ph strong{color:rgba(255,255,255,0.95)}
-.rcard-foot{display:flex;gap:10px;font-size:0.71rem;color:rgba(255,255,255,0.28);padding-top:6px;margin-top:auto;border-top:1px solid rgba(124,115,255,0.1)}
-.rcard-foot-opt{border-top-color:rgba(26,213,152,0.12)}
+.rcard-foot{display:flex;gap:10px;font-size:0.71rem;color:rgba(255,255,255,0.28);padding-top:6px;margin-top:auto;border-top:1px solid rgba(123,102,255,0.1)}
+.rcard-foot-opt{border-top-color:rgba(74,222,128,0.12)}
 .fv{font-weight:700;color:rgba(255,255,255,0.82)}
 .metrics{display:none;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:10px}
-.mc{background:rgba(255,255,255,0.05);border:1px solid rgba(124,115,255,0.2);border-radius:10px;padding:0.85rem 1rem}
+.mc{background:rgba(255,255,255,0.05);border:1px solid rgba(123,102,255,0.2);border-radius:10px;padding:0.85rem 1rem}
 .mc-lbl{font-size:0.57rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:8px}
 .mc-pct{font-size:2.2rem;font-weight:900;line-height:1;letter-spacing:-1px;margin-bottom:6px}
-.mc-pct-up{color:#1AD598}
-.mc-pct-dn{color:#7C73FF}
+.mc-pct-up{color:var(--color-success)}
+.mc-pct-dn{color:var(--color-primary)}
 .mc-arrow{font-size:0.72rem;color:rgba(255,255,255,0.38);line-height:1.4}
 .mc-arrow .arr-old{color:rgba(255,255,255,0.28);text-decoration:line-through}
 .mc-arrow .arr-new{color:rgba(255,255,255,0.75);font-weight:600}
 .mc-arrow .arr-sep{margin:0 3px;color:rgba(255,255,255,0.2)}
-.callout{display:none;background:rgba(26,213,152,0.04);border:1.5px solid rgba(26,213,152,0.3);border-radius:12px;padding:1rem 1.4rem;margin-bottom:10px;text-align:center}
+.callout{display:none;background:rgba(74,222,128,0.04);border:1.5px solid rgba(74,222,128,0.3);border-radius:12px;padding:1rem 1.4rem;margin-bottom:10px;text-align:center}
 .cal-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;justify-content:center}
-.cal-pill{background:rgba(26,213,152,0.12);color:#1AD598;border:1px solid rgba(26,213,152,0.25);border-radius:20px;padding:0.18rem 0.75rem;font-size:0.7rem;font-weight:700}
+.cal-pill{background:rgba(74,222,128,0.12);color:var(--color-success);border:1px solid rgba(74,222,128,0.25);border-radius:20px;padding:0.18rem 0.75rem;font-size:0.7rem;font-weight:700}
 .cal-headline{font-size:1.05rem;font-weight:800;color:#ffffff;margin-bottom:6px;letter-spacing:-0.3px}
 .cal-note{font-size:0.68rem;color:rgba(255,255,255,0.28);line-height:1.4}
 .play-bar{display:flex;justify-content:center;padding-top:4px}
-.playbtn{background:#7C73FF;color:white;border:none;border-radius:50px;padding:0.44rem 1.5rem;font-size:0.84rem;font-weight:600;cursor:pointer;transition:opacity .15s}
+.playbtn{background:var(--color-primary);color:white;border:none;border-radius:50px;padding:0.44rem 1.5rem;font-size:0.84rem;font-weight:600;cursor:pointer;transition:opacity .15s}
 .playbtn:hover:not(:disabled){opacity:0.85}
-.playbtn:disabled{background:rgba(124,115,255,0.3);color:rgba(255,255,255,0.35);cursor:default}
+.playbtn:disabled{background:rgba(123,102,255,0.3);color:rgba(255,255,255,0.35);cursor:default}
 .dummy-keep{color:#bbb}
 .speed-wrap{display:flex;align-items:center;gap:4px}
 </style></head><body>
@@ -971,11 +1039,11 @@ function tick(ts){
   if(!t0)t0=ts;var e=(ts-t0)/1000;
   var be=Math.max(0,e-BT/1000),btok=Math.min(Math.floor(be*BS),TOT);
   document.getElementById('cb').textContent=btok;document.getElementById('bb').style.width=(btok/TOT*100)+'%';
-  if(!blit&&e>=BT/1000){blit=true;document.getElementById('tf-b').innerHTML='<span style="color:#7C73FF;font-weight:700">\u26a1 First token \u2014 '+BT+' ms</span>';}
+  if(!blit&&e>=BT/1000){blit=true;document.getElementById('tf-b').innerHTML='<span style="color:var(--color-primary);font-weight:700">\u26a1 First token \u2014 '+BT+' ms</span>';}
   if(btok>=TOT&&!bdone){bdone=true;fin('b',BT/1000+TOT/BS);}
   var ae=Math.max(0,e-AT/1000),atok=Math.min(Math.floor(ae*AS),TOT);
   document.getElementById('ca').textContent=atok;document.getElementById('ba').style.width=(atok/TOT*100)+'%';
-  if(!alit&&e>=AT/1000){alit=true;document.getElementById('tf-a').innerHTML='<span style="color:#1AD598;font-weight:700">\u26a1 First token \u2014 '+AT+' ms</span>';}
+  if(!alit&&e>=AT/1000){alit=true;document.getElementById('tf-a').innerHTML='<span style="color:var(--color-success);font-weight:700">\u26a1 First token \u2014 '+AT+' ms</span>';}
   if(atok>=TOT&&!adone){adone=true;fin('a',AT/1000+TOT/AS);}
   if(!bdone||!adone){raf=requestAnimationFrame(tick);}
   else{document.getElementById('metrics').style.display='grid';document.getElementById('callout').style.display='block';document.getElementById('pb').disabled=false;document.getElementById('pb').textContent='\u21ba Play again';try{var u=new URL(window.parent.location.href);u.searchParams.set('_rd','1');window.parent.history.replaceState({},'',u.toString());}catch(e){}}
@@ -1001,7 +1069,7 @@ def render_token_race(data: dict):
     framework = meta.get("framework", "Model")
     fw_short  = framework.split()[0] if framework else "Model"
 
-    st.markdown('<hr style="border:none;border-top:1px solid rgba(124,115,255,0.18);margin:1rem 0 0.5rem">', unsafe_allow_html=True)
+    st.markdown('<hr style="border:none;border-top:1px solid rgba(123,102,255,0.18);margin:1rem 0 0.5rem">', unsafe_allow_html=True)
     st.markdown('<p class="slabel">Token Race</p>', unsafe_allow_html=True)
     prompt_idx = st.selectbox(
         "Curated prompt",
@@ -1140,7 +1208,7 @@ def render_benchmark(data: dict):
     )
     st.markdown(
         f'<p style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin:0 0 1rem 0;'
-        f'font-family:Inter,-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">{note}</p>',
+        f'font-family:Archivo,system-ui,-apple-system,sans-serif">{note}</p>',
         unsafe_allow_html=True,
     )
 
@@ -1178,7 +1246,7 @@ def render_cross_hardware(data: dict):
     st.markdown('<p class="slabel">Built for Your Stack</p>', unsafe_allow_html=True)
     st.markdown(
         '<p style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin:0 0 1rem 0;'
-        'font-family:Inter,-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+        'font-family:Archivo,system-ui,-apple-system,sans-serif">'
         'Each optimization is purpose-built for a specific hardware + model combo — '
         'we have a version for your exact setup.'
         '</p>',
@@ -1341,8 +1409,8 @@ def build_markdown_report(data: dict, config_id: str) -> str:
 
 _CHART_SCENARIOS = ["small_prompt", "large_prompt", "long_context"]
 _SCENARIO_LABELS = {"small_prompt": "Small Prompt", "large_prompt": "Large Prompt", "long_context": "Long Context"}
-_COL_BASE = "#1AD598"
-_COL_OPT  = "#7C73FF"
+_COL_BASE = "#4ade80"
+_COL_OPT  = "#7b66ff"
 
 def _bar_chart(labels, base_vals, opt_vals, title, unit):
     fig = go.Figure()
@@ -1353,7 +1421,7 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit):
         marker_color=_COL_BASE,
         text=[f"{v} {unit}" for v in base_vals],
         textposition="outside",
-        textfont=dict(size=11, color="#1AD598"),
+        textfont=dict(size=11, color="var(--color-success)"),
     ))
     fig.add_trace(go.Bar(
         name="+ Artemis",
@@ -1362,7 +1430,7 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit):
         marker_color=_COL_OPT,
         text=[f"{v} {unit}" for v in opt_vals],
         textposition="outside",
-        textfont=dict(size=11, color="#7C73FF"),
+        textfont=dict(size=11, color="var(--color-primary)"),
     ))
     fig.update_layout(
         title=dict(text=title, font=dict(size=13, color="rgba(255,255,255,0.75)"), x=0),
@@ -1371,7 +1439,7 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit):
         bargroupgap=0.08,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Inter, -apple-system, sans-serif", color="rgba(255,255,255,0.75)"),
+        font=dict(family="Archivo, system-ui, sans-serif", color="rgba(255,255,255,0.75)"),
         yaxis=dict(showgrid=True, gridcolor="rgba(255,255,255,0.07)", zeroline=False,
                    tickfont=dict(color="rgba(255,255,255,0.35)", size=11)),
         xaxis=dict(tickfont=dict(color="rgba(255,255,255,0.65)", size=12)),
@@ -1396,7 +1464,7 @@ def render_cost_savings(data: dict):
     monthly_saving  = saving_per_1m * monthly_m
     annual_saving   = monthly_saving * 12
 
-    F = "font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
+    F = "font-family:Archivo,system-ui,-apple-system,sans-serif"
     st.markdown(
         f'<p style="font-size:0.85rem;color:rgba(255,255,255,0.4);margin:0 0 1.2rem;{F}">'
         f'Based on <strong style="color:rgba(255,255,255,0.85)">{monthly_m}M tokens/month</strong></p>',
@@ -1406,7 +1474,7 @@ def render_cost_savings(data: dict):
     c1, c2, c3, c4 = st.columns(4)
     def _card(col, label, value, sub, accent="#ffffff"):
         col.markdown(
-            f'<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(124,115,255,0.2);border-radius:12px;'
+            f'<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(123,102,255,0.2);border-radius:12px;'
             f'box-shadow:0 4px 20px rgba(0,0,0,0.25);padding:1.1rem 1.2rem;{F}">'
             f'<div style="font-size:0.6rem;font-weight:700;letter-spacing:1.6px;'
             f'text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:0.55rem">{label}</div>'
@@ -1417,9 +1485,9 @@ def render_cost_savings(data: dict):
         )
 
     _card(c1, "Cost per 1M tokens",   f"${cost_opt:.2f}",         f"down from ${cost_base:.2f}", "#ffffff")
-    _card(c2, "Saving per 1M tokens", f"${saving_per_1m:.2f}",    f"{saving_pct:.0f}% reduction", "#1AD598")
-    _card(c3, "Monthly saving",        f"${monthly_saving:,.0f}", f"at {monthly_m}M tok/mo",      "#1AD598")
-    _card(c4, "Annual saving",         f"${annual_saving:,.0f}",  "projected over 12 months",     "#1AD598")
+    _card(c2, "Saving per 1M tokens", f"${saving_per_1m:.2f}",    f"{saving_pct:.0f}% reduction", "var(--color-success)")
+    _card(c3, "Monthly saving",        f"${monthly_saving:,.0f}", f"at {monthly_m}M tok/mo",      "var(--color-success)")
+    _card(c4, "Annual saving",         f"${annual_saving:,.0f}",  "projected over 12 months",     "var(--color-success)")
 
 
 def render_performance_charts(data: dict):
@@ -1458,9 +1526,9 @@ def render_accuracy(data: dict):
     n_pass   = sum(1 for v in validations if v.get("pass", False))
     n_total  = len(validations)
 
-    banner_bg    = "rgba(26,213,152,0.08)" if all_pass else "rgba(248,113,113,0.08)"
-    banner_border = "rgba(26,213,152,0.3)" if all_pass else "rgba(248,113,113,0.3)"
-    banner_color  = "#1AD598" if all_pass else "#f87171"
+    banner_bg    = "rgba(74,222,128,0.08)" if all_pass else "rgba(248,113,113,0.08)"
+    banner_border = "rgba(74,222,128,0.3)" if all_pass else "rgba(248,113,113,0.3)"
+    banner_color  = "var(--color-success)" if all_pass else "#f87171"
     banner_icon   = "✓" if all_pass else "✗"
     banner_text   = f"All {n_total} checks passed — semantic equivalence verified" if all_pass else f"{n_pass} / {n_total} checks passed"
 
@@ -1470,7 +1538,7 @@ def render_accuracy(data: dict):
     st.markdown('<p class="slabel">Output Correctness</p>', unsafe_allow_html=True)
     st.markdown(
         '<p style="font-size:0.85rem;color:rgba(255,255,255,0.4);margin:-0.5rem 0 1.2rem;'
-        'font-family:Inter,-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+        'font-family:Archivo,system-ui,-apple-system,sans-serif">'
         'Independent validation layers confirm the optimised model produces '
         'semantically identical outputs to the baseline.</p>',
         unsafe_allow_html=True,
@@ -1502,7 +1570,7 @@ def render_accuracy(data: dict):
             col.markdown(
                 f'<div style="background:rgba(255,255,255,0.04);border:1.5px solid {card_border};border-radius:12px;'
                 f'box-shadow:0 4px 20px rgba(0,0,0,0.25);padding:1.1rem 1rem;height:100%;'
-                f'font-family:Inter,-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif">'
+                f'font-family:Archivo,system-ui,-apple-system,sans-serif">'
 
                 f'<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem">'
                 f'<span style="font-size:0.8rem;color:rgba(255,255,255,0.25);font-weight:600">{layer_num}</span>'
@@ -1541,7 +1609,7 @@ def main():
     # ── Logo header ───────────────────────────────────────────────────────
     st.markdown(
         f'<div style="display:flex;align-items:center;justify-content:space-between;'
-        f'padding-bottom:2rem;border-bottom:1px solid rgba(124,115,255,0.18);margin-bottom:2rem">'
+        f'padding-bottom:2rem;border-bottom:1px solid rgba(123,102,255,0.18);margin-bottom:2rem">'
         f'<img src="data:image/svg+xml;base64,{_TURINTECH_B64}" style="height:32px;object-fit:contain">'
         f'<img src="data:image/png;base64,{_ARTEMIS_WM}" style="height:32px;object-fit:contain">'
         f'</div>',
@@ -1584,7 +1652,7 @@ def main():
     # render_live_section(data)
 
     # ── Cost savings ─────────────────────────────────────────────────────
-    st.markdown('<hr style="border:none;border-top:1px solid rgba(124,115,255,0.18);margin:1.5rem 0 1rem">', unsafe_allow_html=True)
+    st.markdown('<hr style="border:none;border-top:1px solid rgba(123,102,255,0.18);margin:1.5rem 0 1rem">', unsafe_allow_html=True)
     st.markdown('<p class="slabel">Inference Cost Savings</p>', unsafe_allow_html=True)
     with st.container(border=True):
         monthly_tokens_m = st.slider(
@@ -1599,7 +1667,7 @@ def main():
     hw_entries = data.get("cross_hardware", [])
     fw_results = [e for e in hw_entries if e.get("framework", "") == framework]
     if len(fw_results) >= 2:
-        st.markdown('<hr style="border:none;border-top:1px solid rgba(124,115,255,0.18);margin:1.5rem 0 1rem">', unsafe_allow_html=True)
+        st.markdown('<hr style="border:none;border-top:1px solid rgba(123,102,255,0.18);margin:1.5rem 0 1rem">', unsafe_allow_html=True)
         render_cross_hardware(data)
 
 
