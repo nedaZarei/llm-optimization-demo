@@ -978,7 +978,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
   </div>
   <div class="rcard rcard-opt">
     <div class="rcard-hdr rcard-hdr-opt">
-      <span class="rtitle rtitle-opt">⚡ Artemis-optimised</span>
+      <span class="rtitle rtitle-opt">⚡ Artemis-optimized</span>
       <div class="hdr-r">
         <span class="badge br" id="br-a">Racing…</span>
         <span class="badge bd-a" id="bd-a">Done</span>
@@ -1539,7 +1539,7 @@ def render_accuracy(data: dict):
     st.markdown(
         '<p style="font-size:0.85rem;color:rgba(255,255,255,0.4);margin:-0.5rem 0 1.2rem;'
         'font-family:Archivo,system-ui,-apple-system,sans-serif">'
-        'Independent validation layers confirm the optimised model produces '
+        'Independent validation layers confirm the optimized model produces '
         'semantically identical outputs to the baseline.</p>',
         unsafe_allow_html=True,
     )
