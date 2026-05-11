@@ -1000,7 +1000,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 <div class="metrics" id="metrics">
   <div class="mc"><div class="mc-lbl">Throughput</div><div class="mc-pct mc-pct-up">__TPUT_PCT__</div><div class="mc-arrow"><span class="arr-old">__BS_D__ tok/s</span><span class="arr-sep">→</span><span class="arr-new">__AS_D__ tok/s</span></div></div>
   <div class="mc"><div class="mc-lbl">Time to First Token</div><div class="mc-pct mc-pct-dn">__TTFT_PCT__</div><div class="mc-arrow"><span class="arr-old">__BT_D__ ms</span><span class="arr-sep">→</span><span class="arr-new">__AT_D__ ms</span></div></div>
-  <div class="mc"><div class="mc-lbl">Cost per 1M Tokens</div><div class="mc-pct mc-pct-dn">__COST_PCT__</div><div class="mc-arrow"><span class="arr-old">$__COST_B__</span><span class="arr-sep">→</span><span class="arr-new">$__COST_O__</span></div></div>
+  <div class="mc"><div class="mc-lbl">Cost per Token</div><div class="mc-pct mc-pct-dn">__COST_PCT__</div><div class="mc-arrow">throughput-derived · rate-independent</div></div>
 </div>
 <div class="callout" id="callout">
   <div class="cal-pills"><span class="cal-pill">✓ Same model</span><span class="cal-pill">✓ Same hardware</span><span class="cal-pill">✓ Quality intact</span></div>
@@ -1100,11 +1100,9 @@ def render_token_race(data: dict):
     ttft_abs = f"{(base_ttft - opt_ttft) / base_ttft * 100:.0f}%"
     ratio    = f"{opt_tps / base_tps:.2f}"
 
-    acc    = data.get("correctness", {}).get("accuracy", {})
-    cost_b = acc.get("cost_per_1m", {}).get("baseline") or 0
-    cost_o = acc.get("cost_per_1m", {}).get("optimized") or 0
-    cost_pct = f"\u2212{(cost_b - cost_o) / cost_b * 100:.0f}%" if cost_b else "\u2014"
-    cost_abs = f"{(cost_b - cost_o) / cost_b * 100:.0f}%"      if cost_b else "\u2014"
+    # Cost per token reduction is throughput-derived: more tok/s on the same hardware = lower cost per token
+    cost_pct = f"\u2212{(1 - base_tps / opt_tps) * 100:.0f}%" if opt_tps else "\u2014"
+    cost_abs = f"{(1 - base_tps / opt_tps) * 100:.0f}%"       if opt_tps else "\u2014"
 
     html_out = (
         _RACE_HTML
@@ -1123,8 +1121,6 @@ def render_token_race(data: dict):
         .replace("__TPUT_PCT__",  tput_pct)
         .replace("__TTFT_PCT__",  ttft_pct)
         .replace("__TTFT_ABS__",  ttft_abs)
-        .replace("__COST_B__",    f"{cost_b:.2f}")
-        .replace("__COST_O__",    f"{cost_o:.2f}")
         .replace("__COST_PCT__",  cost_pct)
         .replace("__COST_ABS__",  cost_abs)
         .replace("__RATIO__",     ratio)
@@ -1650,17 +1646,6 @@ def main():
 
     # ── HIDDEN: Live comparison (kept for future use) ─────────────────────
     # render_live_section(data)
-
-    # ── Cost savings ─────────────────────────────────────────────────────
-    st.markdown('<hr style="border:none;border-top:1px solid rgba(123,102,255,0.18);margin:1.5rem 0 1rem">', unsafe_allow_html=True)
-    st.markdown('<p class="slabel">Inference Cost Savings</p>', unsafe_allow_html=True)
-    with st.container(border=True):
-        monthly_tokens_m = st.slider(
-            "Monthly tokens (millions)",
-            min_value=10, max_value=5000, value=500, step=10,
-        )
-        st.session_state["monthly_tokens_m"] = monthly_tokens_m
-        render_cost_savings(data)
 
     # ── Cross-hardware (only when ≥2 results exist for the same framework) ──
     framework = data.get("meta", {}).get("framework", "")
