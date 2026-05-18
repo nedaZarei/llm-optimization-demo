@@ -62,6 +62,10 @@
   ],
   "benchmark": {
     "description_note": "Sequential phase: 50 runs per scenario (+20 warmup), single-request, no contention. P50 latency. Hardware: AMD EPYC 9B45 Zen5, 16 cores, GCP c4d-standard-32. vLLM v0.19.0 baseline vs patch-245821fc9ffe. ABBA-validated throughput: 36.17 → 62.64 tok/s (+73.2%, concurrency 32, 512/512 tokens).",
+    "bench_serve": {
+      "note": "vllm bench serve · concurrency 32 · 512 in / 512 out tokens",
+      "ttft_ms": { "baseline": 65267, "optimized": 34314 }
+    },
     "scenarios": {
       "small_prompt": {
         "label": "Small Prompt",

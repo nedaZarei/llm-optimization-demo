@@ -1005,7 +1005,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 <div class="callout" id="callout">
   <div class="cal-pills"><span class="cal-pill">✓ Same model</span><span class="cal-pill">✓ Same hardware</span><span class="cal-pill">✓ Quality intact</span></div>
   <div class="cal-headline">No tradeoffs. Just faster, cheaper inference.</div>
-  <div class="cal-note">Quality validated via semantic similarity ≥ 0.92 (all-MiniLM-L6-v2, 50 runs per scenario)</div>
+  <div class="cal-note">TTFT above: sequential, single-request (user-perceived latency) · Under concurrent load (32 req, ABBA): __BS_NOTE__<br>Quality validated via semantic similarity ≥ 0.92 · all-MiniLM-L6-v2 · 50 runs per scenario</div>
 </div>
 <div class="play-bar"><button class="playbtn" id="pb" onclick="start()">&#9654; Play race</button></div>
 <script>
@@ -1104,6 +1104,17 @@ def render_token_race(data: dict):
     cost_pct = f"\u2212{(1 - base_tps / opt_tps) * 100:.0f}%" if opt_tps else "\u2014"
     cost_abs = f"{(1 - base_tps / opt_tps) * 100:.0f}%"       if opt_tps else "\u2014"
 
+    # Bench serve concurrent TTFT (vllm bench serve, 32 req)
+    bs = data.get("benchmark", {}).get("bench_serve", {})
+    bs_ttft = bs.get("ttft_ms", {})
+    bs_b = bs_ttft.get("baseline")
+    bs_o = bs_ttft.get("optimized")
+    if bs_b and bs_o:
+        bs_pct  = f"\u2212{(bs_b - bs_o) / bs_b * 100:.1f}%"
+        bs_note = f"{bs_b:,}\u202fms \u2192 {bs_o:,}\u202fms ({bs_pct})"
+    else:
+        bs_note = ""
+
     html_out = (
         _RACE_HTML
         .replace("__FW__",        fw_short)
@@ -1124,6 +1135,7 @@ def render_token_race(data: dict):
         .replace("__COST_PCT__",  cost_pct)
         .replace("__COST_ABS__",  cost_abs)
         .replace("__RATIO__",     ratio)
+        .replace("__BS_NOTE__",   bs_note)
     )
 
     st.components.v1.html(html_out, height=500, scrolling=False)
