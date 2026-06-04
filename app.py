@@ -776,13 +776,11 @@ def _run_comparison(prompt: dict, services: dict, meta: dict,
             cur2 = "" if done2 else " ▌"
             ph_t1.write(text1 + cur1)
             ph_t2.write(text2 + cur2)
-            if ttft1:
-                tps_str = f" · <strong>{tps1:.1f} tok/s</strong>" if tps1 else ""
-                ph_m1.markdown(f'<p class="live-meta">TTFT <strong>{ttft1:.0f} ms</strong>{tps_str}</p>',
+            if tps1:
+                ph_m1.markdown(f'<p class="live-meta">TPOT <strong>{1000/tps1:.2f} ms/tok</strong> · <strong>{tps1:.1f} tok/s</strong></p>',
                                unsafe_allow_html=True)
-            if ttft2:
-                tps_str = f" · <strong>{tps2:.1f} tok/s</strong>" if tps2 else ""
-                ph_m2.markdown(f'<p class="live-meta">TTFT <strong>{ttft2:.0f} ms</strong>{tps_str}</p>',
+            if tps2:
+                ph_m2.markdown(f'<p class="live-meta">TPOT <strong>{1000/tps2:.2f} ms/tok</strong> · <strong>{tps2:.1f} tok/s</strong></p>',
                                unsafe_allow_html=True)
 
         _time.sleep(0.025)
@@ -881,15 +879,12 @@ def render_live_section(data: dict):
 
 
 def _show_speedup(r: dict, ph_speedup, ph_m1, ph_m2, data: dict, speedup_in_box: bool = False):
-    ttft1, ttft2 = r.get("ttft1"), r.get("ttft2")
-    tps1,  tps2  = r.get("tps1"),  r.get("tps2")
-    if ttft1:
-        s = f" · <strong>{tps1:.1f} tok/s</strong>" if tps1 else ""
-        ph_m1.markdown(f'<p class="live-meta">TTFT <strong>{ttft1:.0f} ms</strong>{s}</p>',
+    tps1, tps2 = r.get("tps1"), r.get("tps2")
+    if tps1:
+        ph_m1.markdown(f'<p class="live-meta">TPOT <strong>{1000/tps1:.2f} ms/tok</strong> · <strong>{tps1:.1f} tok/s</strong></p>',
                        unsafe_allow_html=True)
-    if ttft2:
-        s = f" · <strong>{tps2:.1f} tok/s</strong>" if tps2 else ""
-        ph_m2.markdown(f'<p class="live-meta">TTFT <strong>{ttft2:.0f} ms</strong>{s}</p>',
+    if tps2:
+        ph_m2.markdown(f'<p class="live-meta">TPOT <strong>{1000/tps2:.2f} ms/tok</strong> · <strong>{tps2:.1f} tok/s</strong></p>',
                        unsafe_allow_html=True)
     if tps1 and tps2 and not speedup_in_box:
         ratio = tps2 / max(tps1, 0.001)
@@ -974,7 +969,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
     </div>
     <div class="txt-ph" id="tx-b">__BASE_TEXT__</div>
     <div class="rcard-foot">
-      <span>TTFT <span class="fv">__BT_D__ ms</span></span>
+      <span>TPOT <span class="fv">__BT_TPOT__ ms/tok</span></span>
       <span>Speed <span class="fv">__BS_D__ tok/s</span></span>
     </div>
   </div>
@@ -994,20 +989,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
     </div>
     <div class="txt-ph" id="tx-a">__OPT_TEXT__</div>
     <div class="rcard-foot rcard-foot-opt">
-      <span>TTFT <span class="fv">__AT_D__ ms</span></span>
+      <span>TPOT <span class="fv">__AT_TPOT__ ms/tok</span></span>
       <span>Speed <span class="fv">__AS_D__ tok/s</span></span>
     </div>
   </div>
 </div>
 <div class="metrics" id="metrics">
   <div class="mc"><div class="mc-lbl">Throughput</div><div class="mc-pct mc-pct-up">__TPUT_PCT__</div><div class="mc-arrow"><span class="arr-old">__BS_D__ tok/s</span><span class="arr-sep">→</span><span class="arr-new">__AS_D__ tok/s</span></div></div>
-  <div class="mc"><div class="mc-lbl">Time to First Token</div><div class="mc-pct mc-pct-dn">__TTFT_PCT__</div><div class="mc-arrow"><span class="arr-old">__BT_D__ ms</span><span class="arr-sep">→</span><span class="arr-new">__AT_D__ ms</span></div></div>
+  <div class="mc"><div class="mc-lbl">Time per Output Token</div><div class="mc-pct mc-pct-dn">__TPOT_PCT__</div><div class="mc-arrow"><span class="arr-old">__BT_TPOT__ ms/tok</span><span class="arr-sep">→</span><span class="arr-new">__AT_TPOT__ ms/tok</span></div></div>
   <div class="mc"><div class="mc-lbl">Cost per Token</div><div class="mc-pct mc-pct-dn">__COST_PCT__</div><div class="mc-arrow">throughput-derived · rate-independent</div></div>
 </div>
 <div class="callout" id="callout">
   <div class="cal-pills"><span class="cal-pill">✓ Same model</span><span class="cal-pill">✓ Same hardware</span><span class="cal-pill">✓ Quality intact</span></div>
   <div class="cal-headline">No tradeoffs. Just faster, cheaper inference.</div>
-  <div class="cal-note">TTFT above: sequential, single-request (user-perceived latency) · Under concurrent load (32 req, ABBA): __BS_NOTE__<br>Quality validated via semantic similarity ≥ 0.92 · all-MiniLM-L6-v2 · 50 runs per scenario</div>
+  <div class="cal-note">Throughput: decode-heavy workload (128 in / 2048 out), concurrency 32, vLLM bench serve · TPOT = 1000 / throughput<br>Quality validated via lm-eval-harness (MMLU / HellaSwag / GSM8K) — all deltas within per-task standard error</div>
 </div>
 <div class="play-bar"><button class="playbtn" id="pb" onclick="start()">&#9654; Play race</button></div>
 <script>
@@ -1101,30 +1096,21 @@ def render_token_race(data: dict):
     opt_text  = _prep_response_text(opt_rec.get("text", ""))
 
     tput_pct = f"+{(opt_tps - base_tps) / base_tps * 100:.0f}%"
-    ttft_pct = f"\u2212{(base_ttft - opt_ttft) / base_ttft * 100:.0f}%"
-    ttft_abs = f"{(base_ttft - opt_ttft) / base_ttft * 100:.0f}%"
     ratio    = f"{opt_tps / base_tps:.2f}"
+
+    base_tpot = round(1000 / base_tps, 2) if base_tps else 0
+    opt_tpot  = round(1000 / opt_tps,  2) if opt_tps  else 0
+    tpot_pct  = f"\u2212{(base_tpot - opt_tpot) / base_tpot * 100:.0f}%" if base_tpot else "\u2014"
 
     # Cost per token reduction is throughput-derived: more tok/s on the same hardware = lower cost per token
     cost_pct = f"\u2212{(1 - base_tps / opt_tps) * 100:.0f}%" if opt_tps else "\u2014"
     cost_abs = f"{(1 - base_tps / opt_tps) * 100:.0f}%"       if opt_tps else "\u2014"
 
-    # Bench serve concurrent TTFT (vllm bench serve, 32 req)
-    bs = data.get("benchmark", {}).get("bench_serve", {})
-    bs_ttft = bs.get("ttft_ms", {})
-    bs_b = bs_ttft.get("baseline")
-    bs_o = bs_ttft.get("optimized")
-    if bs_b and bs_o:
-        bs_pct  = f"\u2212{(bs_b - bs_o) / bs_b * 100:.1f}%"
-        bs_note = f"{bs_b:,}\u202fms \u2192 {bs_o:,}\u202fms ({bs_pct})"
-    else:
-        bs_note = ""
-
     html_out = (
         _RACE_HTML
         .replace("__FW__",        fw_short)
-        .replace("__BT_D__",      str(int(base_ttft)))
-        .replace("__AT_D__",      str(int(opt_ttft)))
+        .replace("__BT_TPOT__",   f"{base_tpot:.2f}")
+        .replace("__AT_TPOT__",   f"{opt_tpot:.2f}")
         .replace("__BS_D__",      f"{base_tps:.1f}")
         .replace("__AS_D__",      f"{opt_tps:.1f}")
         .replace("__BT__",        str(int(base_ttft)))
@@ -1135,12 +1121,10 @@ def render_token_race(data: dict):
         .replace("__BASE_TEXT__", base_text)
         .replace("__OPT_TEXT__",  opt_text)
         .replace("__TPUT_PCT__",  tput_pct)
-        .replace("__TTFT_PCT__",  ttft_pct)
-        .replace("__TTFT_ABS__",  ttft_abs)
+        .replace("__TPOT_PCT__",  tpot_pct)
         .replace("__COST_PCT__",  cost_pct)
         .replace("__COST_ABS__",  cost_abs)
         .replace("__RATIO__",     ratio)
-        .replace("__BS_NOTE__",   bs_note)
     )
 
     st.components.v1.html(html_out, height=500, scrolling=False)
@@ -1516,8 +1500,8 @@ def render_performance_charts(data: dict):
     labels     = [_SCENARIO_LABELS.get(s, s) for s in _CHART_SCENARIOS if s in scenarios]
     tput_base  = [scenarios[s]["sequential"]["throughput_tps"]["baseline"]  for s in _CHART_SCENARIOS if s in scenarios]
     tput_opt   = [scenarios[s]["sequential"]["throughput_tps"]["optimized"] for s in _CHART_SCENARIOS if s in scenarios]
-    ttft_base  = [scenarios[s]["sequential"]["ttft_ms"]["baseline"]         for s in _CHART_SCENARIOS if s in scenarios]
-    ttft_opt   = [scenarios[s]["sequential"]["ttft_ms"]["optimized"]        for s in _CHART_SCENARIOS if s in scenarios]
+    tpot_base  = [round(1000 / v, 2) for v in tput_base]
+    tpot_opt   = [round(1000 / v, 2) for v in tput_opt]
 
     ch1, ch2 = st.columns(2, gap="medium")
     with ch1:
@@ -1527,7 +1511,7 @@ def render_performance_charts(data: dict):
         )
     with ch2:
         st.plotly_chart(
-            _bar_chart(labels, ttft_base, ttft_opt, "Time to First Token (lower is better)", "ms"),
+            _bar_chart(labels, tpot_base, tpot_opt, "Time per Output Token (lower is better)", "ms/tok"),
             use_container_width=True, config={"displayModeBar": False},
         )
 
