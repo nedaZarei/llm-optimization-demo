@@ -440,6 +440,8 @@ def list_configs():
         try:
             d = json.loads(fpath.read_text())
             m = d.get("meta", {})
+            if m.get("hidden"):
+                continue
             configs.append({
                 "config_id": fpath.stem,
                 "model":     m.get("model", fpath.stem),
@@ -1090,6 +1092,9 @@ def render_token_race(data: dict):
     base_tps  = float(base_rec.get("tps", 40))
     opt_ttft  = float(opt_rec.get("ttft_ms", 800))
     opt_tps   = float(opt_rec.get("tps", 60))
+    # anim_tps: optional override for animation speed when display tps is too high to animate visibly
+    base_anim_tps = float(base_rec.get("anim_tps") or base_tps)
+    opt_anim_tps  = float(opt_rec.get("anim_tps") or opt_tps)
     total_tok = max(len(base_rec.get("text", "").split()), 1)
 
     base_text = _prep_response_text(base_rec.get("text", ""))
@@ -1123,9 +1128,9 @@ def render_token_race(data: dict):
         .replace("__BS_D__",      f"{base_tps:.1f}")
         .replace("__AS_D__",      f"{opt_tps:.1f}")
         .replace("__BT__",        str(int(base_ttft)))
-        .replace("__BS__",        str(base_tps))
+        .replace("__BS__",        str(base_anim_tps))
         .replace("__AT__",        str(int(opt_ttft)))
-        .replace("__AS__",        str(opt_tps))
+        .replace("__AS__",        str(opt_anim_tps))
         .replace("__TOT__",       str(total_tok))
         .replace("__BASE_TEXT__", base_text)
         .replace("__OPT_TEXT__",  opt_text)
@@ -1440,6 +1445,7 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit):
         textposition="outside",
         textfont=dict(size=11, color="var(--color-primary)"),
     ))
+    max_val = max(max(base_vals), max(opt_vals))
     fig.update_layout(
         title=dict(text=title, font=dict(size=13, color="rgba(255,255,255,0.75)"), x=0),
         barmode="group",
@@ -1449,7 +1455,8 @@ def _bar_chart(labels, base_vals, opt_vals, title, unit):
         paper_bgcolor="rgba(0,0,0,0)",
         font=dict(family="Archivo, system-ui, sans-serif", color="rgba(255,255,255,0.75)"),
         yaxis=dict(showgrid=True, gridcolor="rgba(255,255,255,0.07)", zeroline=False,
-                   tickfont=dict(color="rgba(255,255,255,0.35)", size=11)),
+                   tickfont=dict(color="rgba(255,255,255,0.35)", size=11),
+                   range=[0, max_val * 1.22]),
         xaxis=dict(tickfont=dict(color="rgba(255,255,255,0.65)", size=12)),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
                     font=dict(size=12, color="rgba(255,255,255,0.75)")),

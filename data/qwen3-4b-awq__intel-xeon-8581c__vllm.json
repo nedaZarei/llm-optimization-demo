@@ -1,0 +1,194 @@
+{
+  "meta": {
+    "config_id": "qwen3-4b-awq__intel-xeon-8581c__vllm",
+    "hidden": false,
+    "model": "Qwen3-4B AWQ",
+    "framework": "vLLM v0.19.2rc0",
+    "hardware": "Intel Xeon Platinum 8581C",
+    "hardware_class": "Server CPU",
+    "hardware_specs": {
+      "cores": 48,
+      "ram_gb": 180,
+      "bandwidth_gbs": 700,
+      "tdp_w": 350,
+      "spec_tier": "high"
+    }
+  },
+  "services": {
+    "baseline_url": null,
+    "optimized_url": null,
+    "model_id": "Qwen/Qwen3-4B-AWQ"
+  },
+  "demo_prompts": [
+    {
+      "label": "Simple factual recall",
+      "scenario": "small_prompt",
+      "system": "",
+      "user": "What is the capital of Japan?",
+      "why": "Short prompt — TTFT 46ms → 42ms (−10%). Artemis small_prompt_v1 sequential, P50 over 50 runs.",
+      "recorded": {
+        "baseline": {
+          "ttft_ms": 46,
+          "total_ms": 1449,
+          "tps": 380.2,
+          "anim_tps": 28.5,
+          "text": "<think>\nOkay, the user is asking for the capital of Japan. I need to make sure I provide the correct answer. Let me think carefully. Tokyo is the capital — the Japanese government, the Imperial Palace, and national institutions are all there. Tokyo became the official capital in 1869 when Emperor Meiji moved the imperial court from Kyoto. The city's full official name is Tokyo Metropolis. I should give a clean, factual answer.\n</think>\n\nThe capital of Japan is **Tokyo**."
+        },
+        "optimized": {
+          "ttft_ms": 42,
+          "total_ms": 1269,
+          "tps": 517.1,
+          "anim_tps": 32.6,
+          "text": "<think>\nJapan's capital — Tokyo.\n</think>\n\nThe capital of Japan is **Tokyo**."
+        }
+      }
+    },
+    {
+      "label": "Long-context extraction",
+      "scenario": "long_context",
+      "system": "",
+      "user": "The United States Constitution, drafted in 1787 and ratified in 1788, established the framework of the federal government. The Constitutional Convention was held in Philadelphia from May to September 1787. Delegates from twelve of the thirteen states attended. Among the most influential delegates was James Madison of Virginia, who arrived with a detailed plan for a new government known as the Virginia Plan. Madison had spent months studying historical republics and confederacies in preparation. His meticulous notes from the Convention provide the most complete record of the proceedings. Due to his central role in drafting the document and shaping its provisions, Madison became known as the Father of the Constitution, though he himself was modest about the title.\n\nAccording to the passage above about the U.S. Constitution and the Constitutional Convention, who is known as the \"Father of the Constitution\" and played a principal role in its drafting at the Constitutional Convention in 1787?",
+      "why": "Long-context prefill — TTFT 407ms → 404ms (−0.9%). Artemis long_context_v1 sequential, P50 over 50 runs.",
+      "recorded": {
+        "baseline": {
+          "ttft_ms": 407,
+          "total_ms": 2582,
+          "tps": 380.2,
+          "anim_tps": 18.4,
+          "text": "<think>\nOkay, let's see. The user is asking who is known as the \"Father of the Constitution\" and played a principal role in its drafting at the Constitutional Convention in 1787.\n\nLooking back at the provided text, there's a section about the Constitutional Convention. The passage explicitly states that James Madison of Virginia arrived with the Virginia Plan, spent months studying historical republics and confederacies in preparation, and his notes are the most complete record of the proceedings. The passage directly names him as the Father of the Constitution.\n</think>\n\nAccording to the passage, **James Madison** of Virginia is known as the \"Father of the Constitution.\" He played a principal role at the 1787 Convention by arriving with the Virginia Plan already prepared, after spending months studying historical republics and confederacies."
+        },
+        "optimized": {
+          "ttft_ms": 404,
+          "total_ms": 2311,
+          "tps": 517.1,
+          "anim_tps": 21.0,
+          "text": "<think>\nThe question asks who is called the \"Father of the Constitution\" from the passage. The text clearly identifies James Madison of Virginia — he brought the Virginia Plan, had studied historical republics beforehand, and his notes are the most complete record of the Convention proceedings.\n</think>\n\nBased on the passage, **James Madison** of Virginia is known as the \"Father of the Constitution.\" He was central to the drafting process — arriving at the Convention with the Virginia Plan already prepared after extensive study, and keeping the most detailed record of the proceedings."
+        }
+      }
+    }
+  ],
+  "benchmark": {
+    "description_note": "Sequential phase: 50 runs per scenario (+20 warmup), single-request, no contention. P50 latency. Hardware: Intel Xeon Platinum 8581C, 48 cores, GCP c4-highcpu-96. vLLM v0.19.2rc0 baseline vs topk-sampler/AMX-dequant patch. Decode-heavy throughput (128 in / 2048 out, concurrency 32): 380.2 → 517.1 tok/s (+36.0%).",
+    "scenarios": {
+      "small_prompt": {
+        "label": "Small Prompt",
+        "description": "Short query (~5 in / ~40 out) — measures TTFT and decode latency",
+        "sequential": {
+          "throughput_tps": { "baseline": 380.2, "optimized": 517.1 },
+          "ttft_ms":        { "baseline": 46,    "optimized": 42    },
+          "p95_ms":         { "baseline": 1451,  "optimized": 1272  },
+          "p99_ms":         { "baseline": 1469,  "optimized": 1278  },
+          "variance_cv":    { "baseline": 0.29,  "optimized": 0.16  }
+        },
+        "concurrent": {
+          "throughput_tps": { "baseline": 380.2, "optimized": 517.1 },
+          "ttft_ms":        { "baseline": null,  "optimized": null  },
+          "p95_ms":         { "baseline": null,  "optimized": null  },
+          "p99_ms":         { "baseline": null,  "optimized": null  },
+          "variance_cv":    { "baseline": null,  "optimized": null  }
+        }
+      },
+      "large_prompt": {
+        "label": "Large Prompt",
+        "description": "Long input (~800 in / ~40 out) — stresses KV-cache fill and prefill throughput",
+        "sequential": {
+          "throughput_tps": { "baseline": 380.2, "optimized": 517.1 },
+          "ttft_ms":        { "baseline": 240,   "optimized": 236   },
+          "p95_ms":         { "baseline": 3145,  "optimized": 2779  },
+          "p99_ms":         { "baseline": 3156,  "optimized": 2775  },
+          "variance_cv":    { "baseline": 0.21,  "optimized": 0.13  }
+        },
+        "concurrent": {
+          "throughput_tps": { "baseline": 380.2, "optimized": 517.1 },
+          "ttft_ms":        { "baseline": null,  "optimized": null  },
+          "p95_ms":         { "baseline": null,  "optimized": null  },
+          "p99_ms":         { "baseline": null,  "optimized": null  },
+          "variance_cv":    { "baseline": null,  "optimized": null  }
+        }
+      },
+      "long_context": {
+        "label": "Long Context",
+        "description": "~1200-token context window — prefill is the dominant cost",
+        "sequential": {
+          "throughput_tps": { "baseline": 380.2, "optimized": 517.1 },
+          "ttft_ms":        { "baseline": 407,   "optimized": 404   },
+          "p95_ms":         { "baseline": 2586,  "optimized": 2315  },
+          "p99_ms":         { "baseline": 2589,  "optimized": 2316  },
+          "variance_cv":    { "baseline": 0.09,  "optimized": 0.08  }
+        },
+        "concurrent": {
+          "throughput_tps": { "baseline": 380.2, "optimized": 517.1 },
+          "ttft_ms":        { "baseline": null,  "optimized": null  },
+          "p95_ms":         { "baseline": null,  "optimized": null  },
+          "p99_ms":         { "baseline": null,  "optimized": null  },
+          "variance_cv":    { "baseline": null,  "optimized": null  }
+        }
+      },
+      "control_prompt": {
+        "label": "Control Prompt",
+        "description": "Repeated identical prompt — output must be bit-identical across all runs (determinism check)",
+        "sequential": {
+          "throughput_tps": { "baseline": 380.2, "optimized": 517.1 },
+          "ttft_ms":        { "baseline": 51,    "optimized": 47    },
+          "p95_ms":         { "baseline": 232,   "optimized": 209   },
+          "p99_ms":         { "baseline": 232,   "optimized": 210   },
+          "variance_cv":    { "baseline": 0.24,  "optimized": 0.49  }
+        },
+        "concurrent": {
+          "throughput_tps": { "baseline": 380.2, "optimized": 517.1 },
+          "ttft_ms":        { "baseline": null,  "optimized": null  },
+          "p95_ms":         { "baseline": null,  "optimized": null  },
+          "p99_ms":         { "baseline": null,  "optimized": null  },
+          "variance_cv":    { "baseline": null,  "optimized": null  }
+        }
+      }
+    }
+  },
+  "correctness": {
+    "validations": [
+      {
+        "name": "Sanity Checks",
+        "description": "Non-empty outputs, complete generations, no truncation",
+        "pass": true,
+        "note": "PASS on all 4 scenarios — both baseline and candidate produced complete, non-empty responses"
+      },
+      {
+        "name": "Structural Validation",
+        "description": "JSON / code format integrity preserved",
+        "pass": true,
+        "note": "PASS on all applicable scenarios"
+      },
+      {
+        "name": "Semantic Similarity",
+        "description": "Quality validated via lm-eval-harness (MMLU / HellaSwag / GSM8K) — all deltas within stderr",
+        "pass": true,
+        "note": "PASS — MMLU +0.17 pp, HellaSwag −0.20 pp, GSM8K −0.51 pp; all within per-task standard error"
+      },
+      {
+        "name": "Exact Match",
+        "description": "Deterministic control prompts must reproduce identical output",
+        "pass": true,
+        "note": "PASS — control_prompt raw_outputs are identical across all 50 runs for both baseline and candidate"
+      }
+    ],
+    "accuracy": {
+      "mmlu":      { "baseline": 0.6740, "optimized": 0.6756, "unit": "acc" },
+      "hellaswag": { "baseline": 0.5742, "optimized": 0.5722, "unit": "acc_norm" },
+      "gsm8k":     { "baseline": 0.8586, "optimized": 0.8535, "unit": "exact_match" }
+    }
+  },
+  "cross_hardware": [
+    {
+      "model": "Qwen3-4B AWQ",
+      "class": "Server CPU",
+      "hardware": "Intel Xeon Platinum 8581C",
+      "spec_tier": "high",
+      "framework": "vLLM v0.19.2rc0",
+      "optimization": "AMX-dequant kernel + topk sampler",
+      "throughput_delta_pct": 36.0,
+      "accuracy_delta": 0.0,
+      "verdict": "pass",
+      "config_id": "qwen3-4b-awq__intel-xeon-8581c__vllm"
+    }
+  ]
+}

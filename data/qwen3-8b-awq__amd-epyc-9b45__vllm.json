@@ -1,6 +1,7 @@
 {
   "meta": {
     "config_id": "qwen3-8b-awq__amd-epyc-9b45__vllm",
+    "hidden": true,
     "model": "Qwen3-8B AWQ",
     "framework": "vLLM v0.19.0",
     "hardware": "AMD EPYC 9B45 Zen5",
