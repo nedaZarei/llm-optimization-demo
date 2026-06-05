@@ -355,11 +355,19 @@ a.view-link:hover { text-decoration: underline; }
     border: 1px solid rgba(123,102,255,0.25) !important; color: white !important;
 }
 [data-testid="stSelectbox"] span { color: rgba(255,255,255,0.85) !important; }
-[data-baseweb="popover"] > div, [data-baseweb="menu"] {
-    background: var(--color-card) !important; border: 1px solid rgba(123,102,255,0.3) !important;
+[data-baseweb="popover"], [data-baseweb="popover"] > div,
+[data-baseweb="menu"], [data-baseweb="menu"] > ul {
+    background: #0f172a !important;
+    border: 1px solid rgba(123,102,255,0.3) !important;
 }
-[role="option"] { color: rgba(255,255,255,0.82) !important; background: transparent !important; }
-[role="option"]:hover { background: rgba(123,102,255,0.15) !important; }
+[role="option"] {
+    color: rgba(255,255,255,0.82) !important;
+    background: #0f172a !important;
+}
+[role="option"]:hover, [aria-selected="true"][role="option"] {
+    background: rgba(123,102,255,0.2) !important;
+    color: #ffffff !important;
+}
 
 /* ─ Live side-by-side ─ */
 .why-box {
