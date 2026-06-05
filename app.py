@@ -1098,6 +1098,8 @@ def render_token_race(data: dict):
 
     st.markdown('<hr style="border:none;border-top:1px solid rgba(123,102,255,0.18);margin:1rem 0 0.5rem">', unsafe_allow_html=True)
     st.markdown('<p class="slabel">Token Race</p>', unsafe_allow_html=True)
+    if "live_prompt_sel" not in st.session_state:
+        st.session_state["live_prompt_sel"] = min(1, len(demo_prompts) - 1)
     prompt_idx = st.selectbox(
         "Curated prompt",
         range(len(demo_prompts)),
