@@ -925,8 +925,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 .bar-bg{background:rgba(255,255,255,0.08);border-radius:3px;height:4px;overflow:hidden}
 .bar{height:4px;border-radius:3px;width:0%}
 .bar-b{background:var(--color-primary)}.bar-a{background:var(--color-success)}
-.txt-ph{display:none;font-size:0.78rem;color:rgba(255,255,255,0.75);line-height:1.5;max-height:90px;overflow-y:auto;margin-bottom:4px;flex:1}
+.txt-ph{font-size:0.78rem;color:rgba(255,255,255,0.75);line-height:1.5;min-height:72px;max-height:110px;overflow-y:auto;margin-bottom:6px}
 .txt-ph strong{color:rgba(255,255,255,0.95)}
+.cursor{display:inline-block;width:2px;height:0.9em;background:rgba(255,255,255,0.6);margin-left:1px;vertical-align:text-bottom;animation:blink .7s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .rcard-foot{display:flex;gap:10px;font-size:0.71rem;color:rgba(255,255,255,0.28);padding-top:6px;margin-top:auto;border-top:1px solid rgba(123,102,255,0.1)}
 .rcard-foot-opt{border-top-color:rgba(74,222,128,0.12)}
 .fv{font-weight:700;color:rgba(255,255,255,0.82)}
@@ -962,12 +964,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
         <span class="rtime" id="tm-b"></span>
       </div>
     </div>
+    <div class="txt-ph" id="tx-b"></div>
     <div id="cp-b">
       <div class="ttft-hit" id="tf-b" style="color:rgba(255,255,255,0.2);font-style:italic">waiting for first token…</div>
       <div class="cnt-row"><span class="cnt" id="cb">0</span><span class="cunit">tokens</span></div>
       <div class="bar-bg"><div class="bar bar-b" id="bb"></div></div>
     </div>
-    <div class="txt-ph" id="tx-b">__BASE_TEXT__</div>
+    <div id="bt-src" style="display:none">__BASE_TEXT__</div>
     <div class="rcard-foot">
       <span>TPOT <span class="fv">__BT_TPOT__ ms/tok</span></span>
       <span>Speed <span class="fv">__BS_D__ tok/s</span></span>
@@ -982,12 +985,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
         <span class="rtime" id="tm-a"></span>
       </div>
     </div>
+    <div class="txt-ph" id="tx-a"></div>
     <div id="cp-a">
       <div class="ttft-hit" id="tf-a" style="color:rgba(255,255,255,0.2);font-style:italic">waiting for first token…</div>
       <div class="cnt-row"><span class="cnt" id="ca">0</span><span class="cunit">tokens</span></div>
       <div class="bar-bg"><div class="bar bar-a" id="ba"></div></div>
     </div>
-    <div class="txt-ph" id="tx-a">__OPT_TEXT__</div>
+    <div id="at-src" style="display:none">__OPT_TEXT__</div>
     <div class="rcard-foot rcard-foot-opt">
       <span>TPOT <span class="fv">__AT_TPOT__ ms/tok</span></span>
       <span>Speed <span class="fv">__AS_D__ tok/s</span></span>
@@ -1008,13 +1012,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 <script>
 var BT=__BT__,BS=__BS__,AT=__AT__,AS=__AS__,TOT=__TOT__;
 var t0=null,raf=null,bdone=false,adone=false,blit=false,alit=false;
+var BPARTS=[],APARTS=[];
+function tokenize(html){
+  var parts=[],re=/(<[^>]+>|[^\s<]+|\s+)/g,m;
+  while((m=re.exec(html))!==null)parts.push(m[0]);
+  return parts;
+}
+function streamText(el,parts,tok,total,done){
+  var n=done?parts.length:Math.floor(tok/total*parts.length);
+  el.innerHTML=parts.slice(0,n).join('')+(done?'':'<span class="cursor"></span>');
+}
 function reset(){
   document.getElementById('cb').textContent='0';document.getElementById('ca').textContent='0';
   document.getElementById('bb').style.width='0%';document.getElementById('ba').style.width='0%';
   document.getElementById('tf-b').innerHTML='<span style="color:rgba(255,255,255,0.2);font-style:italic">waiting\u2026</span>';
   document.getElementById('tf-a').innerHTML='<span style="color:rgba(255,255,255,0.2);font-style:italic">waiting\u2026</span>';
+  document.getElementById('tx-b').innerHTML='';document.getElementById('tx-a').innerHTML='';
   ['b','a'].forEach(function(s){
-    document.getElementById('cp-'+s).style.display='';document.getElementById('tx-'+s).style.display='none';
+    document.getElementById('cp-'+s).style.display='';
     document.getElementById('br-'+s).style.display='';document.getElementById('bd-'+s).style.display='none';
     document.getElementById('tm-'+s).style.display='none';
   });
@@ -1025,10 +1040,15 @@ function reset(){
 function fin(s,sec){
   document.getElementById('br-'+s).style.display='none';document.getElementById('bd-'+s).style.display='inline-block';
   var tm=document.getElementById('tm-'+s);tm.textContent=sec.toFixed(1)+'s';tm.style.display='inline-block';
-  document.getElementById('cp-'+s).style.display='none';document.getElementById('tx-'+s).style.display='block';
+  document.getElementById('cp-'+s).style.display='none';
+  var parts=s==='b'?BPARTS:APARTS;
+  document.getElementById('tx-'+s).innerHTML=parts.join('');
 }
 function start(){
-  if(raf)cancelAnimationFrame(raf);reset();t0=null;
+  if(raf)cancelAnimationFrame(raf);
+  BPARTS=tokenize(document.getElementById('bt-src').innerHTML);
+  APARTS=tokenize(document.getElementById('at-src').innerHTML);
+  reset();t0=null;
   document.getElementById('pb').disabled=true;document.getElementById('pb').textContent='\u23f3 Racing\u2026';
   raf=requestAnimationFrame(tick);
 }
@@ -1036,10 +1056,12 @@ function tick(ts){
   if(!t0)t0=ts;var e=(ts-t0)/1000;
   var be=Math.max(0,e-BT/1000),btok=Math.min(Math.floor(be*BS),TOT);
   document.getElementById('cb').textContent=btok;document.getElementById('bb').style.width=(btok/TOT*100)+'%';
+  if(blit)streamText(document.getElementById('tx-b'),BPARTS,btok,TOT,bdone);
   if(!blit&&e>=BT/1000){blit=true;document.getElementById('tf-b').innerHTML='<span style="color:var(--color-primary);font-weight:700">\u26a1 First token \u2014 '+BT+' ms</span>';}
   if(btok>=TOT&&!bdone){bdone=true;fin('b',BT/1000+TOT/BS);}
   var ae=Math.max(0,e-AT/1000),atok=Math.min(Math.floor(ae*AS),TOT);
   document.getElementById('ca').textContent=atok;document.getElementById('ba').style.width=(atok/TOT*100)+'%';
+  if(alit)streamText(document.getElementById('tx-a'),APARTS,atok,TOT,adone);
   if(!alit&&e>=AT/1000){alit=true;document.getElementById('tf-a').innerHTML='<span style="color:var(--color-success);font-weight:700">\u26a1 First token \u2014 '+AT+' ms</span>';}
   if(atok>=TOT&&!adone){adone=true;fin('a',AT/1000+TOT/AS);}
   if(!bdone||!adone){raf=requestAnimationFrame(tick);}
