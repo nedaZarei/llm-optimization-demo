@@ -933,8 +933,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 .bar-bg{background:rgba(255,255,255,0.08);border-radius:3px;height:4px;overflow:hidden}
 .bar{height:4px;border-radius:3px;width:0%}
 .bar-b{background:var(--color-primary)}.bar-a{background:var(--color-success)}
-.txt-ph{font-size:0.78rem;color:rgba(255,255,255,0.75);line-height:1.5;min-height:72px;max-height:110px;overflow-y:auto;margin-bottom:6px}
+.txt-ph{font-size:0.78rem;color:rgba(255,255,255,0.75);line-height:1.5;min-height:72px;max-height:200px;overflow-y:auto;margin-bottom:6px}
 .txt-ph strong{color:rgba(255,255,255,0.95)}
+.think-block{color:rgba(255,255,255,0.28);font-style:italic;font-size:0.75em}
 .cursor{display:inline-block;width:2px;height:0.9em;background:rgba(255,255,255,0.6);margin-left:1px;vertical-align:text-bottom;animation:blink .7s step-end infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .rcard-foot{display:flex;gap:10px;font-size:0.71rem;color:rgba(255,255,255,0.28);padding-top:6px;margin-top:auto;border-top:1px solid rgba(123,102,255,0.1)}
@@ -1056,6 +1057,7 @@ function start(){
   if(raf)cancelAnimationFrame(raf);
   BPARTS=tokenize(document.getElementById('bt-src').innerHTML);
   APARTS=tokenize(document.getElementById('at-src').innerHTML);
+  TOT=BPARTS.length;
   reset();t0=null;
   document.getElementById('pb').disabled=true;document.getElementById('pb').textContent='\u23f3 Racing\u2026';
   raf=requestAnimationFrame(tick);
@@ -1159,7 +1161,7 @@ def render_token_race(data: dict):
         .replace("__RATIO__",     ratio)
     )
 
-    st.components.v1.html(html_out, height=500, scrolling=False)
+    st.components.v1.html(html_out, height=580, scrolling=False)
 
 
 # ── Section renderers ─────────────────────────────────────────────────────────

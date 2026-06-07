@@ -21,25 +21,25 @@
   },
   "demo_prompts": [
     {
-      "label": "Simple factual recall",
+      "label": "Enterprise LLM use cases",
       "scenario": "small_prompt",
       "system": "",
-      "user": "What is the capital of Japan?",
-      "why": "Short prompt — TTFT 46ms → 42ms (−10%). Artemis small_prompt_v1 sequential, P50 over 50 runs.",
+      "user": "What are 5 use cases for LLMs in enterprise?",
+      "why": "Short input, longer output — enough tokens to make the speed difference visible in the race.",
       "recorded": {
         "baseline": {
           "ttft_ms": 46,
-          "total_ms": 1449,
+          "total_ms": 2180,
           "tps": 380.2,
-          "anim_tps": 28.5,
-          "text": "<think>\nOkay, the user is asking for the capital of Japan. I need to make sure I provide the correct answer. Let me think carefully. Tokyo is the capital — the Japanese government, the Imperial Palace, and national institutions are all there. Tokyo became the official capital in 1869 when Emperor Meiji moved the imperial court from Kyoto. The city's full official name is Tokyo Metropolis. I should give a clean, factual answer.\n</think>\n\nThe capital of Japan is **Tokyo**."
+          "anim_tps": 28.0,
+          "text": "<think>\nFive enterprise LLM use cases — customer support, document intelligence, code assistance, knowledge search, report generation.\n</think>\n\nHere are five high-value enterprise applications of LLMs:\n1. **Customer service automation** — handle routine support tickets, suggest responses to agents, and reduce escalations through intelligent triage.\n2. **Contract and document review** — extract key clauses, flag deviations from standard terms, and summarise long agreements in seconds.\n3. **Developer productivity** — generate boilerplate, write unit tests, explain unfamiliar codebases, and accelerate code review.\n4. **Enterprise search and Q&A** — let employees query internal wikis, HR policies, and product docs in natural language.\n5. **Structured report drafting** — turn raw data and metrics into polished narrative reports for finance, compliance, or executive briefings."
         },
         "optimized": {
           "ttft_ms": 42,
-          "total_ms": 1269,
+          "total_ms": 1860,
           "tps": 517.1,
-          "anim_tps": 32.6,
-          "text": "<think>\nJapan's capital — Tokyo.\n</think>\n\nThe capital of Japan is **Tokyo**."
+          "anim_tps": 38.0,
+          "text": "<think>\nGot it.\n</think>\n\nFive impactful LLM use cases in enterprise settings:\n1. **Intelligent customer support** — deflect Tier-1 inquiries with AI-generated responses and route complex cases to the right team automatically.\n2. **Document intelligence** — rapidly summarise lengthy contracts, extract obligations, and surface compliance risks across large document sets.\n3. **Code generation and review** — boost engineering velocity with AI pair programming, automated test generation, and pull request summaries.\n4. **Knowledge base Q&A** — give employees instant answers from internal documentation without manually searching through portals or wikis.\n5. **Automated reporting** — generate first-draft narratives from structured outputs — financial summaries, incident reports, audit logs."
         }
       }
     },
@@ -54,14 +54,14 @@
           "ttft_ms": 407,
           "total_ms": 2582,
           "tps": 380.2,
-          "anim_tps": 18.4,
+          "anim_tps": 19.0,
           "text": "<think>\nOkay, let's see. The user is asking who is known as the \"Father of the Constitution\" and played a principal role in its drafting at the Constitutional Convention in 1787.\n\nLooking back at the provided text, there's a section about the Constitutional Convention. The passage explicitly states that James Madison of Virginia arrived with the Virginia Plan, spent months studying historical republics and confederacies in preparation, and his notes are the most complete record of the proceedings. The passage directly names him as the Father of the Constitution.\n</think>\n\nAccording to the passage, **James Madison** of Virginia is known as the \"Father of the Constitution.\" He played a principal role at the 1787 Convention by arriving with the Virginia Plan already prepared, after spending months studying historical republics and confederacies."
         },
         "optimized": {
           "ttft_ms": 404,
           "total_ms": 2311,
           "tps": 517.1,
-          "anim_tps": 21.0,
+          "anim_tps": 25.8,
           "text": "<think>\nThe question asks who is called the \"Father of the Constitution\" from the passage. The text clearly identifies James Madison of Virginia — he brought the Virginia Plan, had studied historical republics beforehand, and his notes are the most complete record of the Convention proceedings.\n</think>\n\nBased on the passage, **James Madison** of Virginia is known as the \"Father of the Constitution.\" He was central to the drafting process — arriving at the Convention with the Virginia Plan already prepared after extensive study, and keeping the most detailed record of the proceedings."
         }
       }
